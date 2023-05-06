@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "DrawDebugHelpers.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -236,7 +237,24 @@ void AHamsterDemoCharacter::MoveRight(float Value)
 // 업데이트 문
 void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 {
+	Super::Tick(DeltaSeconds);
 
+	FHitResult OutHit;
+	FVector Start = GetActorLocation();
+
+	//  Start.Z += 50.f;
+	// Start.X += 200.f;
+
+	FVector ForwardVector = GetActorForwardVector(); // 총이 바라보는 방향이어야 합니다.
+	FVector End = ((ForwardVector * 500.f) + Start);
+	FCollisionQueryParams CollisionParams;
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 5);
+
+	if (ActorLineTraceSingle(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetComponent()->GetName()));
+	}
 }
 
 void AHamsterDemoCharacter::TurnAtRate(float Rate)

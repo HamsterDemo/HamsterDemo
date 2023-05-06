@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "InteractableObject.h"
 #include "HamsterDemoCharacter.generated.h"
 
 class UInputComponent;
@@ -127,14 +128,13 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+
 private:
 
 	bool TraceOn(struct FHitResult& OutHit);
 	FVector GetSpawnFVector(); // 총알 스폰 위치 구하기
 	FVector GetGunRightFVector(); // 총이 바라보는 방향 구하기
 
-	float TraceOffset = 500.0f;
-
-	
+	AInteractableObject* TraceInteractableObject(struct FHitResult& inHit);
 };
 

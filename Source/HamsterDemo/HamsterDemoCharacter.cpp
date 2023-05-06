@@ -237,14 +237,32 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 	FHitResult hitResult;
 	if (TraceOn(hitResult))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("상호 작용 가능한 물체와의 충돌 감지")); // 이 곳에서 액터를 가져온 후, 멤버 변수로 세팅합니다. 
+		auto interactableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
+		if (interactableObj != nullptr)
+		{
+			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
+			if (isSuccessInteract)
+			{
+				// 상호 작용 성공 시 캐릭터가 할 행동 
+			}
+		}
 	}
+}
+
+AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
+{
+	auto actor = inHit.GetActor();
+	if (actor == nullptr)
+		return nullptr;
+
+	return Cast<AInteractableObject>(actor);
 }
 
 bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)
 {
 	auto startPos = GetSpawnFVector();
 	auto forwardVector = GetGunRightFVector();
+	float TraceOffset = 500.0f;
 
 	FVector endPos = ((forwardVector * TraceOffset) + startPos);
 

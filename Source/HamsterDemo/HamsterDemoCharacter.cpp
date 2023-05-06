@@ -147,11 +147,6 @@ void AHamsterDemoCharacter::OnFire()
 	}
 }
 
-void AHamsterDemoCharacter::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
-}
-
 // 화면을 터치했을 때 불리는 콜백
 void AHamsterDemoCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
@@ -239,22 +234,62 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	FHitResult OutHit;
-	FVector Start = GetActorLocation();
+	FHitResult hitResult;
+	if (TraceOn(hitResult))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("상호 작용 가능한 물체와의 충돌 감지")); // 이 곳에서 액터를 가져온 후, 멤버 변수로 세팅합니다. 
+	}
+}
 
-	//  Start.Z += 50.f;
-	// Start.X += 200.f;
+bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)
+{
+	auto startPos = GetSpawnFVector();
+	auto forwardVector = GetGunRightFVector();
 
-	FVector ForwardVector = GetActorForwardVector(); // 총이 바라보는 방향이어야 합니다.
-	FVector End = ((ForwardVector * 500.f) + Start);
+	FVector endPos = ((forwardVector * TraceOffset) + startPos);
+
 	FCollisionQueryParams CollisionParams;
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 5);
+	return GetWorld()->LineTraceSingleByChannel(OutHit, startPos, endPos, ECollisionChannel::ECC_WorldStatic, CollisionParams);
+}
 
-	if (ActorLineTraceSingle(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
+FVector AHamsterDemoCharacter::GetSpawnFVector()
+{
+	const FRotator SpawnRotation = GetControlRotation();
+
+	FVector spawnPos;
+
+	if (FP_MuzzleLocation != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetComponent()->GetName()));
+		spawnPos = FP_MuzzleLocation->GetComponentLocation();
 	}
+	else
+	{
+		spawnPos = GetActorLocation();
+	}
+
+	return spawnPos + SpawnRotation.RotateVector(GunOffset);
+}
+
+// Gun's Y Vector
+FVector AHamsterDemoCharacter::GetGunRightFVector()
+{
+	FVector RightVector; // 총이 바라보는 방향이어야 합니다.
+
+	if (FP_MuzzleLocation != nullptr)
+	{
+		RightVector = FP_MuzzleLocation->GetRightVector(); 
+	}
+	else if (FP_Gun != nullptr)
+	{
+		RightVector = FP_Gun->GetRightVector();
+	}
+	else
+	{
+		RightVector = GetActorRightVector();
+	}
+
+	return RightVector;
 }
 
 void AHamsterDemoCharacter::TurnAtRate(float Rate)

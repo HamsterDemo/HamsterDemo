@@ -81,10 +81,12 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AHamsterDemoCharacter::OnFire);
 
+	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &AHamsterDemoCharacter::OnInteract);
+
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AHamsterDemoCharacter::OnResetVR);
+	// PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AHamsterDemoCharacter::OnResetVR);
 
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AHamsterDemoCharacter::MoveForward);
@@ -97,6 +99,11 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("TurnRate", this, &AHamsterDemoCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHamsterDemoCharacter::LookUpAtRate);
+}
+
+void AHamsterDemoCharacter::OnInteract()
+{
+
 }
 
 // 총알 생성 로직
@@ -224,6 +231,12 @@ void AHamsterDemoCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 	}
+}
+
+// 업데이트 문
+void AHamsterDemoCharacter::Tick(float DeltaSeconds)
+{
+
 }
 
 void AHamsterDemoCharacter::TurnAtRate(float Rate)

@@ -105,7 +105,8 @@ protected:
 	};
 	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
+	void OnInteract(); // 상호 작용 시 불리는 함수
+
 	TouchData	TouchItem;
 	
 protected:
@@ -126,6 +127,9 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	virtual void Tick(float DeltaSeconds) override;
+
 
 };
 

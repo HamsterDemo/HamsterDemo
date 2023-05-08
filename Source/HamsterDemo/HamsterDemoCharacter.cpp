@@ -81,7 +81,7 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AHamsterDemoCharacter::OnFire);
-
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AHamsterDemoCharacter::OnSprint);
 	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &AHamsterDemoCharacter::OnInteract);
 
 	// Enable touchscreen input
@@ -100,6 +100,11 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("TurnRate", this, &AHamsterDemoCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AHamsterDemoCharacter::LookUpAtRate);
+}
+
+void AHamsterDemoCharacter::OnSprint()
+{
+
 }
 
 void AHamsterDemoCharacter::OnInteract()

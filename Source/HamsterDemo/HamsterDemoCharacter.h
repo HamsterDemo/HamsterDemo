@@ -74,6 +74,8 @@ protected:
 	
 	/** Fires a projectile. */
 	void OnFire();
+	void OnSprint();
+	void OnInteract(); // 상호 작용 시 불리는 함수
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -103,7 +105,6 @@ protected:
 	};
 	void BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
-	void OnInteract(); // 상호 작용 시 불리는 함수
 
 	TouchData	TouchItem;
 	

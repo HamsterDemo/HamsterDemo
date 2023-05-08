@@ -7,11 +7,13 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "DrawDebugHelpers.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -82,6 +84,7 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AHamsterDemoCharacter::OnFire);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AHamsterDemoCharacter::OnSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AHamsterDemoCharacter::OffSprint);
 	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &AHamsterDemoCharacter::OnInteract);
 
 	// Enable touchscreen input
@@ -104,7 +107,14 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AHamsterDemoCharacter::OnSprint()
 {
+	UE_LOG(LogTemp, Log, TEXT("shift pressed"));
+	GetCharacterMovement()->MaxWalkSpeed *= 1.5f;
+}
 
+void AHamsterDemoCharacter::OffSprint()
+{
+	UE_LOG(LogTemp, Log, TEXT("shift released"));
+	GetCharacterMovement()->MaxWalkSpeed /= 1.5f;
 }
 
 void AHamsterDemoCharacter::OnInteract()

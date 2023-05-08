@@ -74,7 +74,8 @@ protected:
 	
 	/** Fires a projectile. */
 	void OnFire();
-	void OnSprint();
+	void OnSprint(); // 달리기 함수
+	void OffSprint();
 	void OnInteract(); // 상호 작용 시 불리는 함수
 
 	/** Handles moving forward/backward */

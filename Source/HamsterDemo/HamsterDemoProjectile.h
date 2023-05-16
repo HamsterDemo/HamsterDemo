@@ -27,6 +27,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 		UParticleSystemComponent* Effect;
 
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+		UParticleSystem* DamagedEffect;
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+		UParticleSystem* UndamagedEffect;
+
 public:
 	AHamsterDemoProjectile();
 

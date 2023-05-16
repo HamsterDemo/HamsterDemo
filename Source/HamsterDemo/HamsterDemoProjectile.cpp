@@ -37,12 +37,20 @@ AHamsterDemoProjectile::AHamsterDemoProjectile()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DAMAGED(TEXT("/Game/InfinityBladeEffects/Effects/FX_Ability/Stun/P_Stun_Stars_Base.P_Stun_Stars_Base"));
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_UNDAMAGED(TEXT("/Game/InfinityBladeEffects/Effects/FX_Ability/Heal/P_Heal_Shrine_Start.P_Heal_Shrine_Start"));
 
-	if (P_UNDAMAGED.Succeeded())
+	/*if (P_DAMAGED.Succeeded())
 	{
 		Effect->SetTemplate(P_DAMAGED.Object);
 		Effect->bAutoActivate = false;
-		//Effect->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		
+	
+	}*/
+
+	if (P_DAMAGED.Succeeded())
+	{
+		DamagedEffect = P_DAMAGED.Object;
+	}
+	if (P_UNDAMAGED.Succeeded())
+	{
+		UndamagedEffect = P_UNDAMAGED.Object;
 	}
 }
 
@@ -52,18 +60,22 @@ void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	//피직스에 부딪히면 add impulse & destroy
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation()); 
+
+		Effect->SetTemplate(DamagedEffect);
 
 		Effect->Activate(true);
 		
 
 		//Destroy();
 	}
-	else //이외는 destroy만
+	else //피직스 없는 액터들
 	{
 		//OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
-
-		Destroy();
+		Effect->SetTemplate(UndamagedEffect);
+		
+		Effect->Activate(true);
+		//Destroy();
 	}
 }

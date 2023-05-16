@@ -29,7 +29,7 @@ AHamsterDemoProjectile::AHamsterDemoProjectile()
 	ProjectileMovement->bShouldBounce = false;
 
 	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	InitialLifeSpan = 1.0f;
 
 	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 	Effect->SetupAttachment(RootComponent);
@@ -39,7 +39,7 @@ AHamsterDemoProjectile::AHamsterDemoProjectile()
 
 	if (P_UNDAMAGED.Succeeded())
 	{
-		Effect->SetTemplate(P_UNDAMAGED.Object);
+		Effect->SetTemplate(P_DAMAGED.Object);
 		Effect->bAutoActivate = false;
 		//Effect->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		

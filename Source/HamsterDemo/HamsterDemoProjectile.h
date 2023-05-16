@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "HamsterDemoProjectile.generated.h"
 
 class USphereComponent;
@@ -24,10 +23,6 @@ class AHamsterDemoProjectile : public AActor
 	UProjectileMovementComponent* ProjectileMovement;
 
 public:
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-		UParticleSystemComponent* Effect;
-
-public:
 	AHamsterDemoProjectile();
 
 	/** called when projectile hits something */
@@ -38,9 +33,5 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
-
-private:
-	UFUNCTION()
-	void OnEffectFinished(UParticleSystemComponent* PSystem);
 };
 

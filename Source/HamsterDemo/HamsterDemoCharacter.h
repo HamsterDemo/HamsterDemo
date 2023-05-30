@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InteractableObject.h"
+#include "ProjectileEffect.h"
 #include "HamsterDemoCharacter.generated.h"
 
 class UInputComponent;
@@ -35,6 +36,8 @@ class AHamsterDemoCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
+
+	class ProjectileEffect* DamagedEffect;
 public:
 	AHamsterDemoCharacter();
 

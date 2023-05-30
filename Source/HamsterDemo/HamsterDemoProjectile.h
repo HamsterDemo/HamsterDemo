@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/Classes/Particles/ParticleSystemComponent.h"
+#include "ProjectileEffect.h"
 #include "HamsterDemoProjectile.generated.h"
 
 class USphereComponent;
@@ -23,14 +24,8 @@ class AHamsterDemoProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
-public:
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-		UParticleSystemComponent* Effect;
-
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-		UParticleSystem* DamagedEffect;
-	UPROPERTY(VisibleAnywhere, Category = Effect)
-		UParticleSystem* UndamagedEffect;
+	UPROPERTY(EditAnywhere, Category = Effect, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AProjectileEffect> DamagedEffect;
 
 public:
 	AHamsterDemoProjectile();

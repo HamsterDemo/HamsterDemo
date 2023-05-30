@@ -30,28 +30,6 @@ AHamsterDemoProjectile::AHamsterDemoProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 1.0f;
-
-	Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
-	Effect->SetupAttachment(RootComponent);
-
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DAMAGED(TEXT("/Game/InfinityBladeEffects/Effects/FX_Ability/Stun/P_Stun_Stars_Base.P_Stun_Stars_Base"));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_UNDAMAGED(TEXT("/Game/InfinityBladeEffects/Effects/FX_Ability/Heal/P_Heal_Shrine_Start.P_Heal_Shrine_Start"));
-
-	/*if (P_DAMAGED.Succeeded())
-	{
-		Effect->SetTemplate(P_DAMAGED.Object);
-		Effect->bAutoActivate = false;
-	
-	}*/
-
-	if (P_DAMAGED.Succeeded())
-	{
-		DamagedEffect = P_DAMAGED.Object;
-	}
-	if (P_UNDAMAGED.Succeeded())
-	{
-		UndamagedEffect = P_UNDAMAGED.Object;
-	}
 }
 
 void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -62,20 +40,25 @@ void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation()); 
 
-		Effect->SetTemplate(DamagedEffect);
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			const FRotator SpawnRotation = GetActorRotation();
+			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+			const FVector SpawnLocation = GetActorLocation();
 
-		Effect->Activate(true);
-		
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-		//Destroy();
+			// spawn the projectile at the muzzle
+			if (DamagedEffect != nullptr)
+			{
+				World->SpawnActor<AProjectileEffect>(DamagedEffect, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			}
+		}
 	}
-	else //피직스 없는 액터들
-	{
-		//OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
-		Effect->SetTemplate(UndamagedEffect);
-		
-		Effect->Activate(true);
-		//Destroy();
-	}
+	Destroy();
+
 }

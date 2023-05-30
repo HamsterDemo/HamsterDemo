@@ -5,8 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InteractableObject.h"
+#include "GameplayWidget.h"
 #include "ProjectileEffect.h"
 #include "HamsterDemoCharacter.generated.h"
+////ï¿½Æ·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//#include "Blueprint/UserWidget.h"
+//#include "GameplayWidget.generated.h"
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -77,9 +81,9 @@ protected:
 	
 	/** Fires a projectile. */
 	void OnFire();
-	void OnSprint(); // ´Þ¸®±â ÇÔ¼ö
+	void OnSprint(); // ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 	void OffSprint();
-	void OnInteract(); // »óÈ£ ÀÛ¿ë ½Ã ºÒ¸®´Â ÇÔ¼ö
+	void OnInteract(); // ï¿½ï¿½È£ ï¿½Û¿ï¿½ ï¿½ï¿½ ï¿½Ò¸ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -137,9 +141,15 @@ public:
 private:
 
 	bool TraceOn(struct FHitResult& OutHit);
-	FVector GetSpawnFVector(); // ÃÑ¾Ë ½ºÆù À§Ä¡ ±¸ÇÏ±â
-	FVector GetGunRightFVector(); // ÃÑÀÌ ¹Ù¶óº¸´Â ¹æÇâ ±¸ÇÏ±â
+	FVector GetSpawnFVector(); // ï¿½Ñ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½Ï±ï¿½
+	FVector GetGunRightFVector(); // ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¶óº¸´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï±ï¿½
 
 	AInteractableObject* TraceInteractableObject(struct FHitResult& inHit);
+
+protected:
+	TSubclassOf<UUserWidget> WidgetClass;
+	UUserWidget* Widget;
+//ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½
+
 };
 

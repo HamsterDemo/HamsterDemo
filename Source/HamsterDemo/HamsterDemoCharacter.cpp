@@ -58,6 +58,28 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup.UI_InteractablePopup_C")); 
+	if (BP_UI_InteractablePopup.Succeeded())
+	{
+		WidgetClass = BP_UI_InteractablePopup.Class;
+		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Widget Class failed"));
+	}
+
+	/*FStringClassReference BP_UI_InteractablePopup(TEXT("WidgetBlueprint'/Game/UI/UI_InteractablePopup.UI_InteractablePopup'"));
+	if (WidgetClass = BP_UI_InteractablePopup.TryLoadClass<UUserWidget>())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Widget Class failed"));
+	}*/
+
 }
 
 void AHamsterDemoCharacter::BeginPlay()
@@ -67,6 +89,23 @@ void AHamsterDemoCharacter::BeginPlay()
 
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	Mesh1P->SetHiddenInGame(false, true);
+
+	if (IsValid(WidgetClass))
+	{
+		Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WidgetClass));
+
+		if (IsValid(Widget))
+		{
+			Widget->AddToViewport();
+			UE_LOG(LogTemp, Log, TEXT("Widget valid"));
+		}
+
+		UE_LOG(LogTemp, Log, TEXT("Widget Class valid"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Widget Class invalid"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -116,6 +155,14 @@ void AHamsterDemoCharacter::OffSprint()
 	UE_LOG(LogTemp, Log, TEXT("shift released"));
 	GetCharacterMovement()->MaxWalkSpeed /= 1.5f;
 }
+
+//void AHamsterDemoCharacter::NativeConstruct()
+//{
+//	Super::NativeConstruct();
+//
+//
+//
+//}
 
 void AHamsterDemoCharacter::OnInteract()
 {
@@ -259,6 +306,16 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			if (isSuccessInteract)
 			{
 				// 상호 작용 성공 시 캐릭터가 할 행동 
+
+				/*if (IsValid(WidgetClass))
+				{
+					Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WidgetClass));
+
+					if (IsValid(Widget))
+					{
+						Widget->AddToViewport();
+					}
+				}*/
 			}
 		}
 	}

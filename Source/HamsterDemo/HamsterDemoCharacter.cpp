@@ -96,7 +96,7 @@ void AHamsterDemoCharacter::BeginPlay()
 
 		if (IsValid(Widget))
 		{
-			Widget->AddToViewport();
+			//Widget->AddToViewport();
 			UE_LOG(LogTemp, Log, TEXT("Widget valid"));
 		}
 
@@ -305,6 +305,7 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
 			if (isSuccessInteract)
 			{
+				Widget->AddToViewport();
 				// 상호 작용 성공 시 캐릭터가 할 행동 
 
 				/*if (IsValid(WidgetClass))

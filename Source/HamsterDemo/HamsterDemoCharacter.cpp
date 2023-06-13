@@ -97,7 +97,6 @@ void AHamsterDemoCharacter::BeginPlay()
 
 		if (IsValid(Widget))
 		{
-			//Widget->AddToViewport();
 			UE_LOG(LogTemp, Log, TEXT("Widget valid"));
 		}
 
@@ -306,14 +305,30 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
 			if (isSuccessInteract)
 			{
-				Widget->SetPositionInViewport(textLocation);
-				Widget->AddToViewport(); //위젯 띄우기
+				if (true) //뷰포트에 없으면 위젯 띄우기
+				{
+					Widget->SetPositionInViewport(textLocation);
+					Widget->AddToViewport(); //위젯 띄우기
+					
+
+					FTimerHandle WaitHandle;
+					float WaitTime = 1.5; 
+					GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+						{
+							Widget->RemoveFromParent();
+
+						}), WaitTime, false);
+
+					
+				}
+				
 
 				// 상호 작용 성공 시 캐릭터가 할 행동 
 
 				
 			}
 		}
+		
 	}
 }
 

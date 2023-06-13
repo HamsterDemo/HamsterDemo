@@ -149,6 +149,7 @@ private:
 protected:
 	TSubclassOf<UUserWidget> WidgetClass;
 	UUserWidget* Widget;
+	FVector2D textLocation;
 //�̸��� �̵����� ������ �� �� �� ������ �ϴ� ��
 
 };

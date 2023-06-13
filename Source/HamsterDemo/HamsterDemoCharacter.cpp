@@ -8,6 +8,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "MotionControllerComponent.h"
@@ -305,18 +306,12 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
 			if (isSuccessInteract)
 			{
-				Widget->AddToViewport();
+				Widget->SetPositionInViewport(textLocation);
+				Widget->AddToViewport(); //위젯 띄우기
+
 				// 상호 작용 성공 시 캐릭터가 할 행동 
 
-				/*if (IsValid(WidgetClass))
-				{
-					Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WidgetClass));
-
-					if (IsValid(Widget))
-					{
-						Widget->AddToViewport();
-					}
-				}*/
+				
 			}
 		}
 	}
@@ -327,6 +322,11 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 	auto actor = inHit.GetActor();
 	if (actor == nullptr)
 		return nullptr;
+
+	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
+	FVector WorldLocation= actor->GetActorLocation();
+
+	PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
 
 	return Cast<AInteractableObject>(actor);
 }

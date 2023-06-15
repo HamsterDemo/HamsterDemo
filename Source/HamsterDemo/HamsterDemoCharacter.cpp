@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -305,22 +306,23 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
 			if (isSuccessInteract)
 			{
-				if (true) //뷰포트에 없으면 위젯 띄우기
+				Widget->SetPositionInViewport(textLocation);
+
+				if (!Widget->IsVisible()) //뷰포트에 없으면 위젯 띄우기
 				{
-					Widget->SetPositionInViewport(textLocation);
 					Widget->AddToViewport(); //위젯 띄우기
-					
+
 
 					FTimerHandle WaitHandle;
-					float WaitTime = 1.5; 
+					float WaitTime = 1.0; 
 					GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 						{
 							Widget->RemoveFromParent();
 
-						}), WaitTime, false);
+						}), WaitTime, false); //1.5초 후 위젯 제거
 
-					
 				}
+				
 				
 
 				// 상호 작용 성공 시 캐릭터가 할 행동 

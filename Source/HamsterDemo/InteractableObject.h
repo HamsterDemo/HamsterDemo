@@ -24,5 +24,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	bool IsInteractable();
+	virtual void Interact();
 
 };

@@ -12,6 +12,7 @@
 #include "GameFramework/PlayerController.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "UObject/UObjectBaseUtility.h"
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "DrawDebugHelpers.h"
@@ -157,13 +158,18 @@ void AHamsterDemoCharacter::OnInteract()
 	if (isSuccessInteract)
 	{
 		UE_LOG(LogTemp, Log, TEXT("E pressed"));
-		auto InteractableClass= InteractableActor->GetClass();
-		if (InteractableClass)
+
+		if (InteractableObj != nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("interactable Class check"));
+			UE_LOG(LogTemp, Log, TEXT("interactable obj not null"));
+			InteractableObj->Interact();
+			
 		}
 		
-		//InteractableObj.Interact();
+		
+	
+		
+		
 	}
 }
 
@@ -297,7 +303,7 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 	FHitResult hitResult;
 	if (TraceOn(hitResult))
 	{
-		auto InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
+		InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
 		if (InteractableObj != nullptr)
 		{
 			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
@@ -333,7 +339,7 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 
 AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
 {
-	InteractableActor = inHit.GetActor();
+	auto InteractableActor = inHit.GetActor();
 	if (InteractableActor == nullptr)
 		return nullptr;
 

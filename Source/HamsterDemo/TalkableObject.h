@@ -22,11 +22,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void Interact();
-
 
 public:
 	bool IsInteractable();
+	void Interact() override;
+
 
 protected:
 	TSubclassOf<UUserWidget> TalkPopupClass;

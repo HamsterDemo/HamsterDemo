@@ -26,8 +26,13 @@ void AInteractableObject::Tick(float DeltaTime)
 
 bool AInteractableObject::IsInteractable()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Found Interactable Object"));
+	//UE_LOG(LogTemp, Warning, TEXT("Found Interactable Object"));
 
 	return true;
+}
+
+void AInteractableObject::Interact()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact"));
 }
 

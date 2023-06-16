@@ -24,5 +24,6 @@ bool ATalkableObject::IsInteractable()
 
 void ATalkableObject::Interact()
 {
+	UE_LOG(LogTemp, Log, TEXT("talkable interact"));
 
 }

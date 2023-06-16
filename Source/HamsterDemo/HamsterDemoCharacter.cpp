@@ -309,6 +309,11 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
 			if (isSuccessInteract)
 			{
+				const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
+				FVector WorldLocation = InteractableObj->GetActorLocation();
+
+				PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
+
 				InteractableText->SetPositionInViewport(textLocation);
 
 				if (!InteractableText->IsVisible()) //뷰포트에 없으면 위젯 띄우기
@@ -333,22 +338,21 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 				
 			}
 		}
-		
 	}
+	else
+	{
+		InteractableObj = nullptr;
+	}
+
 }
 
 AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
 {
-	auto InteractableActor = inHit.GetActor();
-	if (InteractableActor == nullptr)
+	auto actor = inHit.GetActor();
+	if (actor == nullptr)
 		return nullptr;
 
-	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
-	FVector WorldLocation= InteractableActor->GetActorLocation();
-
-	PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
-
-	return Cast<AInteractableObject>(InteractableActor);
+	return Cast<AInteractableObject>(actor);
 }
 
 bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)
@@ -360,7 +364,6 @@ bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)
 	FVector endPos = ((forwardVector * TraceOffset) + startPos);
 
 	FCollisionQueryParams CollisionParams;
-
 	return GetWorld()->LineTraceSingleByChannel(OutHit, startPos, endPos, ECollisionChannel::ECC_WorldStatic, CollisionParams);
 }
 

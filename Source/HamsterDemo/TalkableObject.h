@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractableObject.h"
+#include "GameplayWidget.h"
 #include "TalkableObject.generated.h"
 
 /**

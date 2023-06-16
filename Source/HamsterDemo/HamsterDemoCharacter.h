@@ -147,10 +147,13 @@ private:
 	AInteractableObject* TraceInteractableObject(struct FHitResult& inHit);
 
 protected:
-	TSubclassOf<UUserWidget> WidgetClass;
-	UUserWidget* Widget;
+	TSubclassOf<UUserWidget> InteractableTextClass;
+	UUserWidget* InteractableText;
+	bool isSuccessInteract;
+	AActor* InteractableActor; //interact() 에서 상호작용 가능한 물체 중 어떤 물체인지 알기 위함
 	FVector2D textLocation;
-//�̸��� �̵����� ������ �� �� �� ������ �ϴ� ��
+
+	
 
 };
 

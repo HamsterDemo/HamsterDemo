@@ -64,23 +64,11 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup.UI_InteractablePopup_C")); 
 	if (BP_UI_InteractablePopup.Succeeded())
 	{
-		WidgetClass = BP_UI_InteractablePopup.Class;
+		InteractableTextClass = BP_UI_InteractablePopup.Class;
 		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Widget Class failed"));
-	}
-
-	/*FStringClassReference BP_UI_InteractablePopup(TEXT("WidgetBlueprint'/Game/UI/UI_InteractablePopup.UI_InteractablePopup'"));
-	if (WidgetClass = BP_UI_InteractablePopup.TryLoadClass<UUserWidget>())
-	{
-		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Widget Class failed"));
-	}*/
+	
+	
 
 }
 
@@ -92,21 +80,20 @@ void AHamsterDemoCharacter::BeginPlay()
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	Mesh1P->SetHiddenInGame(false, true);
 
-	if (IsValid(WidgetClass))
+	if (IsValid(InteractableTextClass))
 	{
-		Widget = Cast<UUserWidget>(CreateWidget(GetWorld(), WidgetClass));
+		InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
 
-		if (IsValid(Widget))
+		if (IsValid(InteractableText))
 		{
 			UE_LOG(LogTemp, Log, TEXT("Widget valid"));
 		}
 
 		UE_LOG(LogTemp, Log, TEXT("Widget Class valid"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Log, TEXT("Widget Class invalid"));
-	}
+
+
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -167,7 +154,17 @@ void AHamsterDemoCharacter::OffSprint()
 
 void AHamsterDemoCharacter::OnInteract()
 {
-
+	if (isSuccessInteract)
+	{
+		UE_LOG(LogTemp, Log, TEXT("E pressed"));
+		auto InteractableClass= InteractableActor->GetClass();
+		if (InteractableClass)
+		{
+			UE_LOG(LogTemp, Log, TEXT("interactable Class check"));
+		}
+		
+		//InteractableObj.Interact();
+	}
 }
 
 // 총알 생성 로직
@@ -300,24 +297,24 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 	FHitResult hitResult;
 	if (TraceOn(hitResult))
 	{
-		auto interactableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
-		if (interactableObj != nullptr)
+		auto InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
+		if (InteractableObj != nullptr)
 		{
-			bool isSuccessInteract = interactableObj->Interact(); // 물체에게 상호 작용 시도
+			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
 			if (isSuccessInteract)
 			{
-				Widget->SetPositionInViewport(textLocation);
+				InteractableText->SetPositionInViewport(textLocation);
 
-				if (!Widget->IsVisible()) //뷰포트에 없으면 위젯 띄우기
+				if (!InteractableText->IsVisible()) //뷰포트에 없으면 위젯 띄우기
 				{
-					Widget->AddToViewport(); //위젯 띄우기
+					InteractableText->AddToViewport(); //위젯 띄우기
 
 
 					FTimerHandle WaitHandle;
 					float WaitTime = 1.0; 
 					GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 						{
-							Widget->RemoveFromParent();
+							InteractableText->RemoveFromParent();
 
 						}), WaitTime, false); //1.5초 후 위젯 제거
 
@@ -336,16 +333,16 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 
 AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
 {
-	auto actor = inHit.GetActor();
-	if (actor == nullptr)
+	InteractableActor = inHit.GetActor();
+	if (InteractableActor == nullptr)
 		return nullptr;
 
 	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
-	FVector WorldLocation= actor->GetActorLocation();
+	FVector WorldLocation= InteractableActor->GetActorLocation();
 
 	PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
 
-	return Cast<AInteractableObject>(actor);
+	return Cast<AInteractableObject>(InteractableActor);
 }
 
 bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)

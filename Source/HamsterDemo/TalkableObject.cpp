@@ -44,10 +44,11 @@ bool ATalkableObject::IsInteractable()
 
 void ATalkableObject::Interact()
 {
-	UE_LOG(LogTemp, Log, TEXT("talkable interact"));
+	
 
 	if (!TalkPopup->IsVisible()) //ºäÆ÷Æ®¿¡ ¾øÀ¸¸é À§Á¬ ¶ç¿ì±â
 	{
+		UE_LOG(LogTemp, Log, TEXT("talkable interact"));
 		TalkPopup->AddToViewport();
 	}
 }

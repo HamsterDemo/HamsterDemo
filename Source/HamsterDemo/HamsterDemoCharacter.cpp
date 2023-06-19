@@ -62,7 +62,7 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup2.UI_InteractablePopup2_C")); 
+	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup.UI_InteractablePopup_C")); 
 	if (BP_UI_InteractablePopup.Succeeded())
 	{
 		InteractableTextClass = BP_UI_InteractablePopup.Class;

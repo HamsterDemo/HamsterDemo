@@ -22,9 +22,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	void SetupPlayerInputComponent(UInputComponent* InputComponent);
 
-	
 
 
 public:

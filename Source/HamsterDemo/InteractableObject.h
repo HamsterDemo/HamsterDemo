@@ -25,5 +25,6 @@ public:
 
 	bool IsInteractable();
 	virtual void Interact();
+	virtual void EndInteract();
 
 };

@@ -22,15 +22,20 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	void SetupPlayerInputComponent(UInputComponent* InputComponent);
+
+	
 
 
 public:
 	bool IsInteractable();
 	void Interact() override;
-
+	void EndInteract() override;
+	
 
 protected:
 	TSubclassOf<UUserWidget> TalkPopupClass;
 	UUserWidget* TalkPopup;
+
 
 };

@@ -62,7 +62,7 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup.UI_InteractablePopup_C")); 
+	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup2.UI_InteractablePopup2_C")); 
 	if (BP_UI_InteractablePopup.Succeeded())
 	{
 		InteractableTextClass = BP_UI_InteractablePopup.Class;
@@ -114,6 +114,7 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AHamsterDemoCharacter::OnSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AHamsterDemoCharacter::OffSprint);
 	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &AHamsterDemoCharacter::OnInteract);
+	PlayerInputComponent->BindAction("EndInteraction", IE_Pressed, this, &AHamsterDemoCharacter::OnEndInteract);
 
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
@@ -145,13 +146,6 @@ void AHamsterDemoCharacter::OffSprint()
 	GetCharacterMovement()->MaxWalkSpeed /= 1.5f;
 }
 
-//void AHamsterDemoCharacter::NativeConstruct()
-//{
-//	Super::NativeConstruct();
-//
-//
-//
-//}
 
 void AHamsterDemoCharacter::OnInteract()
 {
@@ -166,11 +160,17 @@ void AHamsterDemoCharacter::OnInteract()
 			
 		}
 		
-		
-	
-		
-		
 	}
+}
+
+void AHamsterDemoCharacter::OnEndInteract()
+{
+	if (InteractableObj != nullptr)
+	{
+		InteractableObj->EndInteract();
+	}
+	
+
 }
 
 // 총알 생성 로직

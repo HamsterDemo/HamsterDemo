@@ -36,3 +36,8 @@ void AInteractableObject::Interact()
 	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact"));
 }
 
+void AInteractableObject::EndInteract()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact End"));
+}
+

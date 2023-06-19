@@ -2,6 +2,9 @@
 
 
 #include "TalkableObject.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/InputSettings.h"
+
 
 ATalkableObject::ATalkableObject()
 {
@@ -31,6 +34,7 @@ void ATalkableObject::BeginPlay()
 	}
 }
 
+
 bool ATalkableObject::IsInteractable()
 {
 	Super::IsInteractable();
@@ -46,4 +50,17 @@ void ATalkableObject::Interact()
 	{
 		TalkPopup->AddToViewport();
 	}
+}
+
+
+void ATalkableObject::EndInteract()
+{
+	
+
+	if (TalkPopup->IsVisible())
+	{
+		UE_LOG(LogTemp, Log, TEXT("talkable end interact - close talkpopup"));
+		TalkPopup->RemoveFromParent();
+	}
+
 }

@@ -85,6 +85,7 @@ protected:
 	void OnSprint(); // �޸��� �Լ�
 	void OffSprint();
 	void OnInteract(); // ��ȣ �ۿ� �� �Ҹ��� �Լ�
+	void OnEndInteract();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -153,6 +154,7 @@ protected:
 	FVector2D textLocation;
 	bool isSuccessInteract;
 	AInteractableObject* InteractableObj;
+	
 	
 
 	

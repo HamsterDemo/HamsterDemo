@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "InteractableObject.h"
-#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MovableObject.generated.h"
 
 /**
@@ -27,8 +26,9 @@ public:
 	void Interact() override;
 	void EndInteract() override;
 
-	UPROPERTY(EditDefaultsOnly)
-		UPhysicsHandleComponent* MovableHandle;
+	
+	
+	
 
 
 

@@ -13,8 +13,7 @@ void AMovableObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	MovableHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("MovableHandle")); //컴포넌트 추가해야함
-
+	
 
 }
 
@@ -27,7 +26,7 @@ bool AMovableObject::IsInteractable()
 
 void AMovableObject::Interact()
 {
-
+	//this->
 
 }
 

@@ -59,6 +59,8 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
+	
+
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
 
@@ -68,7 +70,6 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 		InteractableTextClass = BP_UI_InteractablePopup.Class;
 		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
 	}
-	
 	
 
 }
@@ -92,9 +93,12 @@ void AHamsterDemoCharacter::BeginPlay()
 
 		UE_LOG(LogTemp, Log, TEXT("Widget Class valid"));
 	}
-
-
-
+	
+	characterPhysicsHandle = this->FindComponentByClass<UPhysicsHandleComponent>();
+	if (characterPhysicsHandle != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("i m fire man"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -316,7 +320,7 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 
 				InteractableText->SetPositionInViewport(textLocation);
 
-				if (!InteractableText->IsVisible()) //뷰포트에 없으면 위젯 띄우기
+				if (!InteractableText->IsVisible()) //뷰포트에 없으면 상호작용 가능 위젯 띄우기
 				{
 					InteractableText->AddToViewport(); //위젯 띄우기
 
@@ -331,9 +335,14 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 
 				}
 				
-				
-
-				// 상호 작용 성공 시 캐릭터가 할 행동 
+				/*
+				auto Movable = Cast<class MovableObject>(InteractableObj);
+				if (Movable != nullptr)
+				{
+					//핸들 넘겨주기
+					//넘겨주고 핸들에 interactableobj 붙여주기
+				}
+				*/
 
 				
 			}

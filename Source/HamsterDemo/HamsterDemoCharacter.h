@@ -6,8 +6,10 @@
 #include "GameFramework/Character.h"
 #include "InteractableObject.h"
 #include "TalkableObject.h"
+#include "MovableObject.h"
 #include "GameplayWidget.h"
 #include "ProjectileEffect.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "HamsterDemoCharacter.generated.h"
 ////�Ʒ� �� ���� ������
 //#include "Blueprint/UserWidget.h"
@@ -154,6 +156,10 @@ protected:
 	FVector2D textLocation;
 	bool isSuccessInteract;
 	AInteractableObject* InteractableObj;
+
+public:
+	// UPROPERTY(EditDefaultsOnly)
+	UPhysicsHandleComponent* characterPhysicsHandle = nullptr;
 	
 	
 

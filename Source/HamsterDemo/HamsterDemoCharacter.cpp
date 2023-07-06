@@ -97,8 +97,14 @@ void AHamsterDemoCharacter::BeginPlay()
 	characterPhysicsHandle = this->FindComponentByClass<UPhysicsHandleComponent>();
 	if (characterPhysicsHandle != nullptr)
 	{
-		UE_LOG(LogTemp, Log, TEXT("i m fire man"));
+		UE_LOG(LogTemp, Log, TEXT("Physics Handle Component found by Class"));
 	}
+
+	/* 매개변수로 넘겨야 되는거> PhysicsHandle 
+	*  HitResult = interactableObj = MovableObj 임
+	* 
+	* 
+	*/
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -160,8 +166,14 @@ void AHamsterDemoCharacter::OnInteract()
 		if (InteractableObj != nullptr)
 		{
 			UE_LOG(LogTemp, Log, TEXT("interactable obj not null"));
-			InteractableObj->Interact();
 			
+			auto Movable = Cast<AMovableObject>(InteractableObj);
+			if (Movable != nullptr) //interactable 중 movable 인지 확인
+			{
+				Movable->SetHandle(characterPhysicsHandle);
+			}
+			
+			InteractableObj->Interact();
 		}
 		
 	}

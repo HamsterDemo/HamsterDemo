@@ -18,6 +18,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual UPrimitiveComponent* GetComponent();
+
+	//UPrimitiveComponent* component = actor->GetComponentByClass(UprimitiveComponent*);
 
 public:	
 	// Called every frame

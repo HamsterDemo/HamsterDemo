@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InteractableObject.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "MovableObject.generated.h"
 
 /**
@@ -22,9 +23,16 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	virtual void Tick(float DeltaSeconds) override;
+
+public:
 	bool IsInteractable();
+	void SetHandle(UPhysicsHandleComponent* PhysicsHandle);
 	void Interact() override;
 	void EndInteract() override;
+
+	UPhysicsHandleComponent* MovableHandle;
+	UPrimitiveComponent* ComponentToGrab;
 
 	
 	

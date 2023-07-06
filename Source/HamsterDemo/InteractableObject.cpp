@@ -17,6 +17,22 @@ void AInteractableObject::BeginPlay()
 	
 }
 
+UPrimitiveComponent* AInteractableObject::GetComponent()
+{
+	
+
+
+	auto result = this->GetComponentByClass(UPrimitiveComponent::StaticClass());
+
+	if (result == nullptr)
+	{
+		return nullptr;
+	}
+
+	return Cast<UPrimitiveComponent>(result);
+	
+}
+
 // Called every frame
 void AInteractableObject::Tick(float DeltaTime)
 {

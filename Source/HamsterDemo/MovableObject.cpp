@@ -13,8 +13,7 @@ void AMovableObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ComponentToGrab = this->GetComponent();
-
+	HookedComponent = this->GetComponent();
 }
 
 void AMovableObject::Tick(float DeltaSeconds)
@@ -22,23 +21,26 @@ void AMovableObject::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	if (MovableHandle == nullptr)
-	{
 		return;
-	}
 
 	if (MovableHandle->GrabbedComponent)
 	{
 		// 잡고있는 쪽으로 오브젝트 이동
-		//MovableHandle->SetTargetLocation();
-		UE_LOG(LogTemp, Log, TEXT("MovableHandle Grabbed Component"));
-	}
+		if (HookingComponent != nullptr)
+		{
+			FVector TargetLocation = HookingComponent->GetComponentLocation();
+			UE_LOG(LogTemp, Log, TEXT("%s"), *TargetLocation.ToString());
 
+			MovableHandle->SetTargetLocation(TargetLocation);
+			UE_LOG(LogTemp, Log, TEXT("MovableHandle Grabbed Component"));
+		}
+	}
 }
+
+
 
 bool AMovableObject::IsInteractable()
 {
-	Super::IsInteractable();
-
 	return true;
 }
 
@@ -48,6 +50,10 @@ void AMovableObject::SetHandle(UPhysicsHandleComponent* PhysicsHandle)
 
 }
 
+void AMovableObject::SetHandleLocation(USceneComponent* GrabLocation)
+{
+	HookingComponent = GrabLocation;
+}
 
 void AMovableObject::Interact()
 {
@@ -58,13 +64,18 @@ void AMovableObject::Interact()
 		UE_LOG(LogTemp, Log, TEXT("MovableHandle nullptr"));
 		return;
 	}
-	if (ComponentToGrab == nullptr)
+	if (HookedComponent == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("ComponentToGrab nullptr"));
 		return;
 	}
 
-	MovableHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+	auto hookedOwner = HookedComponent->GetOwner();
+	if (hookedOwner == nullptr)
+		return;
+
+	MovableHandle->GrabComponentAtLocation(HookedComponent, NAME_None, hookedOwner->GetActorLocation());
+	UE_LOG(LogTemp, Log, TEXT("Hook Complete"));
 }
 
 void AMovableObject::EndInteract()

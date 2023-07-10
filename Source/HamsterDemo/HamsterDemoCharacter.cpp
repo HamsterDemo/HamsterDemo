@@ -100,11 +100,12 @@ void AHamsterDemoCharacter::BeginPlay()
 		UE_LOG(LogTemp, Log, TEXT("Physics Handle Component found by Class"));
 	}
 
-	/* 매개변수로 넘겨야 되는거> PhysicsHandle 
-	*  HitResult = interactableObj = MovableObj 임
-	* 
-	* 
-	*/
+	characterGrabLocation = this->FindComponentByClass<USceneComponent>();
+	if (characterGrabLocation != nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Grab Location Component found by Class"));
+	}
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -171,6 +172,7 @@ void AHamsterDemoCharacter::OnInteract()
 			if (Movable != nullptr) //interactable 중 movable 인지 확인
 			{
 				Movable->SetHandle(characterPhysicsHandle);
+				Movable->SetHandleLocation(characterGrabLocation);
 			}
 			
 			InteractableObj->Interact();

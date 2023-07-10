@@ -19,11 +19,7 @@ void AInteractableObject::BeginPlay()
 
 UPrimitiveComponent* AInteractableObject::GetComponent()
 {
-	
-
-
 	auto result = this->GetComponentByClass(UPrimitiveComponent::StaticClass());
-
 	if (result == nullptr)
 	{
 		return nullptr;

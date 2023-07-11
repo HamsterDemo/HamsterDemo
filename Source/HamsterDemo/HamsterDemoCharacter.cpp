@@ -349,11 +349,15 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 			FTimerHandle WaitHandle;
 			float WaitTime = 1.0;
 
-			// 비동기임
 			GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
-					InteractableText->RemoveFromParent();
+					if (InteractableObj == nullptr && InteractableText->IsVisible())
+					{
+						InteractableText->RemoveFromParent();
+					}
+
 				}), WaitTime, false); //1초 후 위젯 제거
+			
 		}
 	}
 	else

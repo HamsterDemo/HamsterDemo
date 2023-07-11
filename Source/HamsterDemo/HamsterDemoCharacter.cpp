@@ -332,34 +332,28 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 
 				PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
 
+				if (InteractableText == nullptr)
+				{
+					InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
+				}
+
 				InteractableText->SetPositionInViewport(textLocation);
-
-				if (!InteractableText->IsVisible()) //뷰포트에 없으면 상호작용 가능 위젯 띄우기
+				if (!InteractableText->IsVisible()) // 뷰 포트에 없으면 상호작용 가능 위젯 띄우기
 				{
-					InteractableText->AddToViewport(); //위젯 띄우기
-
-
-					FTimerHandle WaitHandle;
-					float WaitTime = 1.0; 
-					GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-						{
-							InteractableText->RemoveFromParent();
-
-						}), WaitTime, false); //1.5초 후 위젯 제거
-
+					InteractableText->AddToViewport(); // 위젯 띄우기
 				}
-				
-				/*
-				auto Movable = Cast<class MovableObject>(InteractableObj);
-				if (Movable != nullptr)
-				{
-					//핸들 넘겨주기
-					//넘겨주고 핸들에 interactableobj 붙여주기
-				}
-				*/
-
-				
 			}
+		}
+		else
+		{
+			FTimerHandle WaitHandle;
+			float WaitTime = 1.0;
+
+			// 비동기임
+			GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					InteractableText->RemoveFromParent();
+				}), WaitTime, false); //1초 후 위젯 제거
 		}
 	}
 	else

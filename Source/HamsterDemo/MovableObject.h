@@ -34,8 +34,6 @@ public:
 	void EndInteract() override;
 
 	UPhysicsHandleComponent* MovableHandle;
-	
-	UPrimitiveComponent* HookedComponent; // 후킹된 컴포넌트
 	USceneComponent* HookingComponent; // 후킹한 목적지 컴포넌트
 
 	

@@ -12,8 +12,6 @@ AMovableObject::AMovableObject()
 void AMovableObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	HookedComponent = this->GetComponent();
 }
 
 void AMovableObject::Tick(float DeltaSeconds)
@@ -37,8 +35,6 @@ void AMovableObject::Tick(float DeltaSeconds)
 	}
 }
 
-
-
 bool AMovableObject::IsInteractable()
 {
 	return true;
@@ -47,7 +43,6 @@ bool AMovableObject::IsInteractable()
 void AMovableObject::SetHandle(UPhysicsHandleComponent* PhysicsHandle)
 { 
 	MovableHandle = PhysicsHandle;
-
 }
 
 void AMovableObject::SetHandleLocation(USceneComponent* GrabLocation)
@@ -57,28 +52,25 @@ void AMovableObject::SetHandleLocation(USceneComponent* GrabLocation)
 
 void AMovableObject::Interact()
 {
-	//PhysicsHandle을 매개변수로 받아서, interactableObj(this)를 getcomponent
-
 	if (MovableHandle == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("MovableHandle nullptr"));
-		return;
-	}
-	if (HookedComponent == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ComponentToGrab nullptr"));
-		return;
-	}
-
-	auto hookedOwner = HookedComponent->GetOwner();
-	if (hookedOwner == nullptr)
 		return;
 
-	MovableHandle->GrabComponentAtLocation(HookedComponent, NAME_None, hookedOwner->GetActorLocation());
+	auto targetComponent = this->GetComponent();
+	if (targetComponent == nullptr)
+		return;
+
+	targetComponent->SetSimulatePhysics(true);
+	MovableHandle->GrabComponentAtLocationWithRotation(targetComponent, NAME_None, GetActorLocation(), GetActorRotation());
 	UE_LOG(LogTemp, Log, TEXT("Hook Complete"));
 }
 
 void AMovableObject::EndInteract()
 {
+	auto targetComponent = this->GetComponent();
+	if (targetComponent == nullptr)
+		return;
 
+	targetComponent->SetSimulatePhysics(false);
+
+	MovableHandle->ReleaseComponent();
 }

@@ -319,52 +319,7 @@ void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	FHitResult hitResult;
-	if (TraceOn(hitResult))
-	{
-		InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
-		if (InteractableObj != nullptr)
-		{
-			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
-			if (isSuccessInteract)
-			{
-				const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
-				FVector WorldLocation = InteractableObj->GetActorLocation();
-
-				PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
-
-				if (InteractableText == nullptr)
-				{
-					InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
-				}
-
-				InteractableText->SetPositionInViewport(textLocation);
-				if (!InteractableText->IsVisible()) // 뷰 포트에 없으면 상호작용 가능 위젯 띄우기
-				{
-					InteractableText->AddToViewport(); // 위젯 띄우기
-				}
-			}
-		}
-		else
-		{
-			FTimerHandle WaitHandle;
-			float WaitTime = 1.0;
-
-			GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					if (InteractableObj == nullptr && InteractableText->IsVisible())
-					{
-						InteractableText->RemoveFromParent();
-					}
-
-				}), WaitTime, false); //1초 후 위젯 제거
-			
-		}
-	}
-	else
-	{
-		InteractableObj = nullptr;
-	}
-
+	TryInteraction(hitResult);
 }
 
 AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
@@ -374,6 +329,54 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 		return nullptr;
 
 	return Cast<AInteractableObject>(actor);
+}
+
+void AHamsterDemoCharacter::ClearInteraction()
+{
+	if (InteractableText->IsVisible())
+	{
+		InteractableText->RemoveFromParent();
+	}
+
+	InteractableObj = nullptr;
+}
+
+// 상호작용 성공 시 행동 
+void AHamsterDemoCharacter::SetInteraction()
+{
+	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
+	FVector WorldLocation = InteractableObj->GetActorLocation();
+
+	PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
+
+	if (InteractableText == nullptr)
+		InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
+
+	InteractableText->SetPositionInViewport(textLocation);
+	if (!InteractableText->IsVisible()) // 뷰 포트에 없으면 상호작용 가능 위젯 띄우기
+	{
+		InteractableText->AddToViewport(); // 위젯 띄우기
+	}
+}
+
+// 상호작용 시도, 실패 시 정보 클리어됨
+void AHamsterDemoCharacter::TryInteraction(FHitResult hitResult)
+{
+	if (TraceOn(hitResult))
+	{
+		InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
+		if (InteractableObj != nullptr)
+		{
+			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
+			if (isSuccessInteract)
+			{
+				SetInteraction();
+				return;
+			}
+		}
+	}
+
+	ClearInteraction();
 }
 
 bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)

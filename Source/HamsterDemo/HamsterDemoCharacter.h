@@ -149,6 +149,9 @@ private:
 	FVector GetGunRightFVector(); // ���� �ٶ󺸴� ���� ���ϱ�
 
 	AInteractableObject* TraceInteractableObject(struct FHitResult& inHit);
+	void ClearInteraction();
+	void SetInteraction();
+	void TryInteraction(FHitResult hitResult);
 
 protected:
 	TSubclassOf<UUserWidget> InteractableTextClass;

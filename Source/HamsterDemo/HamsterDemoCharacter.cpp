@@ -100,7 +100,7 @@ void AHamsterDemoCharacter::BeginPlay()
 		UE_LOG(LogTemp, Log, TEXT("Physics Handle Component found by Class"));
 	}
 
-	characterGrabLocation = this->FindComponentByClass<USceneComponent>();
+	characterGrabLocation = Cast<USceneComponent>(GetDefaultSubobjectByName(TEXT("GrabLocation")));
 	if (characterGrabLocation != nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Grab Location Component found by Class"));
@@ -331,9 +331,11 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 	return Cast<AInteractableObject>(actor);
 }
 
+// 상호작용 종료 시 마무리 작업 친구들
 void AHamsterDemoCharacter::ClearInteraction()
-{
-	if (InteractableText->IsVisible())
+{ 
+	
+	if (InteractableText && InteractableText->IsVisible())
 	{
 		InteractableText->RemoveFromParent();
 	}
@@ -341,7 +343,7 @@ void AHamsterDemoCharacter::ClearInteraction()
 	InteractableObj = nullptr;
 }
 
-// 상호작용 성공 시 행동 
+// 상호작용 가능 판정 성공 시 행동 
 void AHamsterDemoCharacter::SetInteraction()
 {
 	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
@@ -359,7 +361,7 @@ void AHamsterDemoCharacter::SetInteraction()
 	}
 }
 
-// 상호작용 시도, 실패 시 정보 클리어됨
+// 상호작용 시도, 판정 실패 시 정보 클리어됨
 void AHamsterDemoCharacter::TryInteraction(FHitResult hitResult)
 {
 	if (TraceOn(hitResult))

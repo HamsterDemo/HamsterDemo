@@ -30,4 +30,7 @@ public:
 	virtual void Interact();
 	virtual void EndInteract();
 
+private:
+	bool IsInteracting = false;
+
 };

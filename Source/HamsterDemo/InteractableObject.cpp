@@ -40,16 +40,18 @@ bool AInteractableObject::IsInteractable()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Found Interactable Object"));
 
-	return true;
+	return IsInteracting == false;
 }
 
 void AInteractableObject::Interact()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact"));
+	IsInteracting = true;
 }
 
 void AInteractableObject::EndInteract()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact End"));
+	IsInteracting = false;
 }
 

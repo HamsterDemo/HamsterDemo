@@ -44,7 +44,7 @@ bool ATalkableObject::IsInteractable()
 
 void ATalkableObject::Interact()
 {
-	
+	Super::Interact();
 
 	if (!TalkPopup->IsVisible()) //ºäÆ÷Æ®¿¡ ¾øÀ¸¸é À§Á¬ ¶ç¿ì±â
 	{
@@ -56,7 +56,7 @@ void ATalkableObject::Interact()
 
 void ATalkableObject::EndInteract()
 {
-	
+	Super::EndInteract();
 
 	if (TalkPopup->IsVisible())
 	{

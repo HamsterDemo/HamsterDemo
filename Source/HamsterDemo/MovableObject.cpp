@@ -52,6 +52,8 @@ void AMovableObject::SetHandleLocation(USceneComponent* GrabLocation)
 
 void AMovableObject::Interact()
 {
+	Super::Interact();
+
 	if (MovableHandle == nullptr)
 		return;
 
@@ -66,6 +68,8 @@ void AMovableObject::Interact()
 
 void AMovableObject::EndInteract()
 {
+	Super::EndInteract();
+
 	auto targetComponent = this->GetComponent();
 	if (targetComponent == nullptr)
 		return;

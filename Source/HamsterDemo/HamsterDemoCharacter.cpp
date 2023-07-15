@@ -186,6 +186,7 @@ void AHamsterDemoCharacter::OnEndInteract()
 	if (InteractableObj != nullptr)
 	{
 		InteractableObj->EndInteract();
+		InteractableObj = nullptr;
 	}
 	
 
@@ -340,7 +341,6 @@ void AHamsterDemoCharacter::ClearInteraction()
 		InteractableText->RemoveFromParent();
 	}
 
-	InteractableObj = nullptr;
 }
 
 // 상호작용 가능 판정 성공 시 행동 
@@ -379,6 +379,7 @@ void AHamsterDemoCharacter::TryInteraction(FHitResult hitResult)
 	}
 
 	ClearInteraction();
+
 }
 
 bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)

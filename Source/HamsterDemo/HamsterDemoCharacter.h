@@ -50,6 +50,7 @@ public:
 
 protected:
 	virtual void BeginPlay();
+	virtual void Jump();
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -159,6 +160,7 @@ protected:
 	FVector2D textLocation;
 	bool isSuccessInteract;
 	AInteractableObject* InteractableObj;
+	bool IsInteractOn = false; //상호작용 중일 때 방향 전환 등 입력을 막기 위한 변수
 
 public:
 	// UPROPERTY(EditDefaultsOnly)

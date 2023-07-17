@@ -32,6 +32,13 @@ void ATalkableObject::BeginPlay()
 
 		UE_LOG(LogTemp, Log, TEXT("Talk Class valid"));
 	}
+
+	TextLine = Cast<UTextBlock>(TalkPopup->GetWidgetFromName(TEXT("Line")));
+	TextName = Cast<UTextBlock>(TalkPopup->GetWidgetFromName(TEXT("Name")));
+
+	TextLine->SetText(FText::FromString("test line"));
+	TextName->SetText(FText::FromString("test name"));
+
 }
 
 
@@ -50,6 +57,8 @@ void ATalkableObject::Interact()
 	{
 		UE_LOG(LogTemp, Log, TEXT("talkable interact"));
 		TalkPopup->AddToViewport();
+
+
 	}
 }
 

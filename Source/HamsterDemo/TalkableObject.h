@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "InteractableObject.h"
 #include "GameplayWidget.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "TalkableObject.generated.h"
 
 /**
@@ -33,7 +35,14 @@ public:
 
 protected:
 	TSubclassOf<UUserWidget> TalkPopupClass;
-	UUserWidget* TalkPopup;
+	UPROPERTY(EditAnywhere)
+		UUserWidget* TalkPopup;
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		class UTextBlock* TextLine;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+		class UTextBlock* TextName;
 
 
 };

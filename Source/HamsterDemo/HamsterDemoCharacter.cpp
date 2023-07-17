@@ -364,7 +364,7 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 void AHamsterDemoCharacter::ClearInteraction()
 { 
 	
-	if (InteractableText && InteractableText->IsVisible())
+	if (InteractableText) //&& InteractableText->IsVisible()
 	{
 		InteractableText->RemoveFromParent();
 	}

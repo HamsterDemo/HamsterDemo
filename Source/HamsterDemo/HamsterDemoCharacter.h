@@ -156,7 +156,8 @@ private:
 
 protected:
 	TSubclassOf<UUserWidget> InteractableTextClass;
-	UUserWidget* InteractableText;
+	UPROPERTY(EditAnywhere)
+		UUserWidget* InteractableText;
 	FVector2D textLocation;
 	bool isSuccessInteract;
 	AInteractableObject* InteractableObj;

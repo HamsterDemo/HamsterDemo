@@ -29,6 +29,7 @@ protected:
 
 public:
 	bool IsInteractable();
+	bool CanMove() override;
 	void Interact() override;
 	void EndInteract() override;
 	

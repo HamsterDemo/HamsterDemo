@@ -43,6 +43,11 @@ bool AInteractableObject::IsInteractable()
 	return IsInteracting == false;
 }
 
+bool AInteractableObject::CanMove()
+{
+	return true;
+}
+
 void AInteractableObject::Interact()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Interactable Interact"));

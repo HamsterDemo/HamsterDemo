@@ -147,12 +147,10 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 
 void AHamsterDemoCharacter::Jump()
 {
-	if (IsInteractOn == false)
-	{
-		Super::Jump();
-	}
+	if (lockMoveForInteract)
+		return;
 
-
+	Super::Jump();
 }
 
 void AHamsterDemoCharacter::OnSprint()
@@ -185,16 +183,14 @@ void AHamsterDemoCharacter::OnInteract()
 				Movable->SetHandleLocation(characterGrabLocation);
 			}
 
-			auto Talkable = Cast<ATalkableObject>(InteractableObj);
-			if (Talkable != nullptr)
-			{
-				IsInteractOn = true;
-			}
-			
-			
+			lockMoveForInteract = !InteractableObj->CanMove();
 			InteractableObj->Interact();
 		}
 		
+	}
+	else
+	{
+		OnEndInteract();
 	}
 }
 
@@ -202,54 +198,53 @@ void AHamsterDemoCharacter::OnEndInteract()
 {
 	if (InteractableObj != nullptr)
 	{
-		IsInteractOn = false;
 		InteractableObj->EndInteract();
 		InteractableObj = nullptr;
 	}
 	
-
+	lockMoveForInteract = false;
 }
 
 // 총알 생성 로직
 void AHamsterDemoCharacter::OnFire()
 {
-	if (IsInteractOn == false)
+	if (lockMoveForInteract)
+		return;
+	
+	// try and fire a projectile
+	if (ProjectileClass != nullptr)
 	{
-		// try and fire a projectile
-		if (ProjectileClass != nullptr)
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
 		{
-			UWorld* const World = GetWorld();
-			if (World != nullptr)
-			{
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+			const FRotator SpawnRotation = GetControlRotation();
+			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+			const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AHamsterDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			}
+			// spawn the projectile at the muzzle
+			World->SpawnActor<AHamsterDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 		}
+	}
 
 
-		// try and play the sound if specified
-		if (FireSound != nullptr)
+	// try and play the sound if specified
+	if (FireSound != nullptr)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
+
+	// try and play a firing animation if specified
+	if (FireAnimation != nullptr)
+	{
+		// Get the animation object for the arms mesh
+		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+		if (AnimInstance != nullptr)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-		}
-
-		// try and play a firing animation if specified
-		if (FireAnimation != nullptr)
-		{
-			// Get the animation object for the arms mesh
-			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-			if (AnimInstance != nullptr)
-			{
-				AnimInstance->Montage_Play(FireAnimation, 1.f);
-			}
+			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
 }
@@ -320,25 +315,25 @@ void AHamsterDemoCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const 
 
 void AHamsterDemoCharacter::MoveForward(float Value)
 {
-	if (IsInteractOn == false)
+	if (lockMoveForInteract)
+		return;
+	
+	if (Value != 0.0f)
 	{
-		if (Value != 0.0f)
-		{
-			// add movement in that direction
-			AddMovementInput(GetActorForwardVector(), Value);
-		}
+		// add movement in that direction
+		AddMovementInput(GetActorForwardVector(), Value);
 	}
 }
 
 void AHamsterDemoCharacter::MoveRight(float Value)
 {
-	if (IsInteractOn == false)
+	if (lockMoveForInteract)
+		return;
+
+	if (Value != 0.0f)
 	{
-		if (Value != 0.0f)
-		{
-			// add movement in that direction
-			AddMovementInput(GetActorRightVector(), Value);
-		}
+		// add movement in that direction
+		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
 
@@ -364,7 +359,7 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 void AHamsterDemoCharacter::ClearInteraction()
 { 
 	
-	if (InteractableText) //&& InteractableText->IsVisible()
+	if (InteractableText) //&& InteractableText->IsVisible()F
 	{
 		InteractableText->RemoveFromParent();
 	}
@@ -463,20 +458,22 @@ FVector AHamsterDemoCharacter::GetGunRightFVector()
 
 void AHamsterDemoCharacter::TurnAtRate(float Rate)
 {
-	if (IsInteractOn == false)
-	{
-		// calculate delta for this frame from the rate information
-		AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
-	}
+	if (lockMoveForInteract)
+		return;
+
+	// calculate delta for this frame from the rate information
+	AddControllerYawInput(Rate * BaseTurnRate * GetWorld()->GetDeltaSeconds());
+	
 }
 
 void AHamsterDemoCharacter::LookUpAtRate(float Rate)
 {
-	if (IsInteractOn == false)
-	{
-		// calculate delta for this frame from the rate information
-		AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-	}
+	if (lockMoveForInteract)
+		return;
+
+	// calculate delta for this frame from the rate information
+	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+	
 }
 
 bool AHamsterDemoCharacter::EnableTouchscreenMovement(class UInputComponent* PlayerInputComponent)

@@ -37,7 +37,8 @@ void AMovableObject::Tick(float DeltaSeconds)
 
 bool AMovableObject::IsInteractable()
 {
-	return true;
+	return Super::IsInteractable();
+
 }
 
 void AMovableObject::SetHandle(UPhysicsHandleComponent* PhysicsHandle)

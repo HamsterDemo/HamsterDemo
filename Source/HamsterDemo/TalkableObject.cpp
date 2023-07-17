@@ -44,9 +44,11 @@ void ATalkableObject::BeginPlay()
 
 bool ATalkableObject::IsInteractable()
 {
-	Super::IsInteractable();
-
 	return true;
+
+	//이야기 남았으면 true, 끝나면 false
+	//이야기 남았으면 Interact() 다시 해서 이야기 진행
+	//이야기 끝났으면 false해서 EndInteract()로 가게
 }
 
 void ATalkableObject::Interact()
@@ -60,6 +62,11 @@ void ATalkableObject::Interact()
 
 
 	}
+}
+
+bool ATalkableObject::CanMove()
+{
+	return false;
 }
 
 

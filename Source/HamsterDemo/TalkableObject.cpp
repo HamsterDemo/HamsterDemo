@@ -33,18 +33,21 @@ void ATalkableObject::BeginPlay()
 		UE_LOG(LogTemp, Log, TEXT("Talk Class valid"));
 	}
 
-	TextLine = Cast<UTextBlock>(TalkPopup->GetWidgetFromName(TEXT("Line")));
 	TextName = Cast<UTextBlock>(TalkPopup->GetWidgetFromName(TEXT("Name")));
+	TextLine = Cast<UTextBlock>(TalkPopup->GetWidgetFromName(TEXT("Line")));
+	
 
-	TextLine->SetText(FText::FromString("test line"));
 	TextName->SetText(FText::FromString("test name"));
-
+	TextLine->SetText(FText::FromString("test line"));
+	
 }
 
 
 bool ATalkableObject::IsInteractable()
 {
-	return true;
+	
+	
+	return CanTalkMore == true;
 
 	//이야기 남았으면 true, 끝나면 false
 	//이야기 남았으면 Interact() 다시 해서 이야기 진행
@@ -59,9 +62,18 @@ void ATalkableObject::Interact()
 	{
 		UE_LOG(LogTemp, Log, TEXT("talkable interact"));
 		TalkPopup->AddToViewport();
-
+		TextName->SetText(FText::FromString("test name2"));
+		TextLine->SetText(FText::FromString("test line2"));
+		CanTalkMore = true;
 
 	}
+	else
+	{
+		TextName->SetText(FText::FromString("test name3"));
+		TextLine->SetText(FText::FromString("test line3"));
+		CanTalkMore = false;
+	}
+	
 }
 
 bool ATalkableObject::CanMove()
@@ -79,5 +91,6 @@ void ATalkableObject::EndInteract()
 		UE_LOG(LogTemp, Log, TEXT("talkable end interact - close talkpopup"));
 		TalkPopup->RemoveFromParent();
 	}
+	CanTalkMore = true;
 
 }

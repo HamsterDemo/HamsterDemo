@@ -27,7 +27,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 public:
-	bool IsInteractable();
+	bool IsInteractable() override;
 	void SetHandle(UPhysicsHandleComponent* PhysicsHandle);
 	void SetHandleLocation(USceneComponent* GrabLocation);
 	void Interact() override;

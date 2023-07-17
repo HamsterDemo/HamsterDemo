@@ -28,8 +28,9 @@ protected:
 
 
 public:
-	bool IsInteractable();
+	bool IsInteractable() override;
 	bool CanMove() override;
+	bool CanTalkMore = true;
 	void Interact() override;
 	void EndInteract() override;
 	

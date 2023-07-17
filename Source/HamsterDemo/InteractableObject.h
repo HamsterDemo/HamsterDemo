@@ -26,7 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	bool IsInteractable();
+	virtual bool IsInteractable();
 	virtual bool CanMove();
 	virtual void Interact();
 	virtual void EndInteract();

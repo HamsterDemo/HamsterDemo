@@ -16,7 +16,8 @@
 #include "MotionControllerComponent.h"
 #include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
 #include "DrawDebugHelpers.h"
-
+#include "HamsterInteractorComponent.h"
+#include "HamsterGrabbingPointComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -59,7 +60,7 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
-	
+	InteractorComponent = CreateDefaultSubobject<UHamsterInteractorComponent>(TEXT("InteractorComponent"));
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -124,8 +125,9 @@ void AHamsterDemoCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AHamsterDemoCharacter::OnFire);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AHamsterDemoCharacter::OnSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AHamsterDemoCharacter::OffSprint);
-	PlayerInputComponent->BindAction("Interaction", IE_Pressed, this, &AHamsterDemoCharacter::OnInteract);
-	PlayerInputComponent->BindAction("EndInteraction", IE_Pressed, this, &AHamsterDemoCharacter::OnEndInteract);
+
+	// Bind Interacting event
+	InteractorComponent->SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
@@ -163,46 +165,6 @@ void AHamsterDemoCharacter::OffSprint()
 {
 	UE_LOG(LogTemp, Log, TEXT("shift released"));
 	GetCharacterMovement()->MaxWalkSpeed /= 1.5f;
-}
-
-
-void AHamsterDemoCharacter::OnInteract()
-{
-	if (isSuccessInteract)
-	{
-		UE_LOG(LogTemp, Log, TEXT("E pressed"));
-
-		if (InteractableObj != nullptr)
-		{
-			UE_LOG(LogTemp, Log, TEXT("interactable obj not null"));
-			
-			auto Movable = Cast<AMovableObject>(InteractableObj);
-			if (Movable != nullptr) //interactable 중 movable 인지 확인
-			{
-				Movable->SetHandle(characterPhysicsHandle);
-				Movable->SetHandleLocation(characterGrabLocation);
-			}
-
-			lockMoveForInteract = !InteractableObj->CanMove();
-			InteractableObj->Interact();
-		}
-		
-	}
-	else
-	{
-		OnEndInteract();
-	}
-}
-
-void AHamsterDemoCharacter::OnEndInteract()
-{
-	if (InteractableObj != nullptr)
-	{
-		InteractableObj->EndInteract();
-		InteractableObj = nullptr;
-	}
-	
-	lockMoveForInteract = false;
 }
 
 // 총알 생성 로직
@@ -341,9 +303,6 @@ void AHamsterDemoCharacter::MoveRight(float Value)
 void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	FHitResult hitResult;
-	TryInteraction(hitResult);
 }
 
 AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
@@ -353,68 +312,6 @@ AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitR
 		return nullptr;
 
 	return Cast<AInteractableObject>(actor);
-}
-
-// 상호작용 종료 시 마무리 작업 친구들
-void AHamsterDemoCharacter::ClearInteraction()
-{ 
-	
-	if (InteractableText) //&& InteractableText->IsVisible()F
-	{
-		InteractableText->RemoveFromParent();
-	}
-
-}
-
-// 상호작용 가능 판정 성공 시 행동 
-void AHamsterDemoCharacter::SetInteraction()
-{
-	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
-	FVector WorldLocation = InteractableObj->GetActorLocation();
-
-	PlayerController->ProjectWorldLocationToScreen(WorldLocation, textLocation);
-
-	if (InteractableText == nullptr)
-		InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
-
-	InteractableText->SetPositionInViewport(textLocation);
-	if (!InteractableText->IsVisible()) // 뷰 포트에 없으면 상호작용 가능 위젯 띄우기
-	{
-		InteractableText->AddToViewport(); // 위젯 띄우기
-	}
-}
-
-// 상호작용 시도, 판정 실패 시 정보 클리어됨
-void AHamsterDemoCharacter::TryInteraction(FHitResult hitResult)
-{
-	if (TraceOn(hitResult))
-	{
-		InteractableObj = TraceInteractableObject(hitResult); // 감지한 물체가 상호 작용 가능한 물체인 지 체크
-		if (InteractableObj != nullptr)
-		{
-			isSuccessInteract = InteractableObj->IsInteractable(); // 상호작용 가능 판정
-			if (isSuccessInteract)
-			{
-				SetInteraction();
-				return;
-			}
-		}
-	}
-
-	ClearInteraction();
-
-}
-
-bool AHamsterDemoCharacter::TraceOn(struct FHitResult& OutHit)
-{
-	auto startPos = GetSpawnFVector();
-	auto forwardVector = GetGunRightFVector();
-	float TraceOffset = 500.0f;
-
-	FVector endPos = ((forwardVector * TraceOffset) + startPos);
-
-	FCollisionQueryParams CollisionParams;
-	return GetWorld()->LineTraceSingleByChannel(OutHit, startPos, endPos, ECollisionChannel::ECC_WorldStatic, CollisionParams);
 }
 
 FVector AHamsterDemoCharacter::GetSpawnFVector()

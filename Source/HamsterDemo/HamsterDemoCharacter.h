@@ -22,6 +22,8 @@ class UCameraComponent;
 class UMotionControllerComponent;
 class UAnimMontage;
 class USoundBase;
+class UHamsterInteractorComponent;
+class UHamsterGrabbingPointComponent;
 
 UCLASS(config=Game)
 class AHamsterDemoCharacter : public ACharacter
@@ -43,6 +45,9 @@ class AHamsterDemoCharacter : public ACharacter
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UHamsterInteractorComponent* InteractorComponent;
 
 	class ProjectileEffect* DamagedEffect;
 public:
@@ -87,8 +92,6 @@ protected:
 	void OnFire();
 	void OnSprint(); // �޸��� �Լ�
 	void OffSprint();
-	void OnInteract(); // ��ȣ �ۿ� �� �Ҹ��� �Լ�
-	void OnEndInteract();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -144,15 +147,8 @@ public:
 
 
 private:
-
-	bool TraceOn(struct FHitResult& OutHit);
 	FVector GetSpawnFVector(); // �Ѿ� ���� ��ġ ���ϱ�
 	FVector GetGunRightFVector(); // ���� �ٶ󺸴� ���� ���ϱ�
-
-	AInteractableObject* TraceInteractableObject(struct FHitResult& inHit);
-	void ClearInteraction();
-	void SetInteraction();
-	void TryInteraction(FHitResult hitResult);
 
 protected:
 	TSubclassOf<UUserWidget> InteractableTextClass;

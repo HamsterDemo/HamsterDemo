@@ -3,10 +3,13 @@
 
 #include "MovableObject.h"
 
+#include "HamsterInteractorComponent.h"
+#include "HamsterGrabbingPointComponent.h"
+
 
 AMovableObject::AMovableObject()
 {
-
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AMovableObject::BeginPlay()
@@ -18,64 +21,67 @@ void AMovableObject::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (MovableHandle == nullptr)
+	if (InteractorPhysicsHandleComponent == nullptr)
 		return;
 
-	if (MovableHandle->GrabbedComponent)
+	if (InteractorPhysicsHandleComponent->GrabbedComponent)
 	{
-		// 잡고있는 쪽으로 오브젝트 이동
-		if (HookingComponent != nullptr)
-		{
-			FVector TargetLocation = HookingComponent->GetComponentLocation();
-			UE_LOG(LogTemp, Log, TEXT("%s"), *TargetLocation.ToString());
-
-			MovableHandle->SetTargetLocation(TargetLocation);
-			UE_LOG(LogTemp, Log, TEXT("MovableHandle Grabbed Component"));
-		}
+		AActor* Interactor = InteractorPhysicsHandleComponent->GetOwner();
+		UHamsterGrabbingPointComponent* GrabbingPoint = Cast<UHamsterGrabbingPointComponent>(Interactor->GetComponentByClass(UHamsterGrabbingPointComponent::StaticClass()));
+		FVector TargetLocation = GrabbingPoint->K2_GetComponentLocation();
+		InteractorPhysicsHandleComponent->SetTargetLocation(TargetLocation);
 	}
 }
 
-bool AMovableObject::IsInteractable()
+bool AMovableObject::IsInteractable(UHamsterInteractorComponent* InteractorComponent) const
 {
-	return Super::IsInteractable();
+	if (TargetComponent == nullptr)
+		return false;
 
+	AActor* Interactor = InteractorComponent->GetOwner();
+
+	// there is already someone interacting with this
+	if (InteractorPhysicsHandleComponent != nullptr)
+		return false;
+
+	if (Interactor->GetComponentByClass(UPhysicsHandleComponent::StaticClass()) == nullptr)
+		return false;
+
+	if (Interactor->GetComponentByClass(UHamsterGrabbingPointComponent::StaticClass()) == nullptr)
+		return false;
+
+	return true;
 }
 
-void AMovableObject::SetHandle(UPhysicsHandleComponent* PhysicsHandle)
-{ 
-	MovableHandle = PhysicsHandle;
+bool AMovableObject::BeginInteract(UHamsterInteractorComponent* InteractorComponent)
+{
+	AActor* Interactor = InteractorComponent->GetOwner();
+
+	if (TargetComponent == nullptr)
+		return false;
+
+	InteractorPhysicsHandleComponent = Cast<UPhysicsHandleComponent>(Interactor->GetComponentByClass(UPhysicsHandleComponent::StaticClass()));
+	if (InteractorPhysicsHandleComponent == nullptr)
+		return false;
+
+	TargetComponent->SetSimulatePhysics(true);
+	InteractorPhysicsHandleComponent->GrabComponentAtLocationWithRotation(TargetComponent, NAME_None, GetActorLocation(), GetActorRotation());
+	return true;
 }
 
-void AMovableObject::SetHandleLocation(USceneComponent* GrabLocation)
+void AMovableObject::EndInteract(UHamsterInteractorComponent* InteractorComponent)
 {
-	HookingComponent = GrabLocation;
+	if (InteractorPhysicsHandleComponent != nullptr)
+	{
+		InteractorPhysicsHandleComponent->ReleaseComponent();
+		InteractorPhysicsHandleComponent = nullptr;
+	}
+
+	if (TargetComponent != nullptr)
+		TargetComponent->SetSimulatePhysics(false);
 }
 
-void AMovableObject::Interact()
+bool AMovableObject::IsInteracting(UHamsterInteractorComponent* InteractorComponent) const
 {
-	Super::Interact();
-
-	if (MovableHandle == nullptr)
-		return;
-
-	auto targetComponent = this->GetComponent();
-	if (targetComponent == nullptr)
-		return;
-
-	targetComponent->SetSimulatePhysics(true);
-	MovableHandle->GrabComponentAtLocationWithRotation(targetComponent, NAME_None, GetActorLocation(), GetActorRotation());
-	UE_LOG(LogTemp, Log, TEXT("Hook Complete"));
-}
-
-void AMovableObject::EndInteract()
-{
-	Super::EndInteract();
-
-	auto targetComponent = this->GetComponent();
-	if (targetComponent == nullptr)
-		return;
-
-	targetComponent->SetSimulatePhysics(false);
-
-	MovableHandle->ReleaseComponent();
+	return InteractorPhysicsHandleComponent != nullptr;
 }

@@ -140,7 +140,7 @@ bool UHamsterInteractorComponent::DoLineTrace(FHitResult& OutHitResult)
 	FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
 	FVector CameraForward = PlayerCameraManager->GetCameraRotation().Vector();
 
-#if !UE_BUILD_SHIPPING
+#if !UE_BUILD_SHIPPING && !WITH_EDITOR
 	UKismetSystemLibrary::DrawDebugLine
 	(
 		this,

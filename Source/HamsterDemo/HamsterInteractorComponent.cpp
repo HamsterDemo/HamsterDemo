@@ -38,36 +38,26 @@ void UHamsterInteractorComponent::TickComponent(float DeltaTime, ELevelTick Tick
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// if still is interacting, return
 	if (CurrentInteractableObject != nullptr)
 	{
-		// if still is interacting, return
 		if (CurrentInteractableObject->IsInteracting(this) == true)
 		{
-			// 어차피 되지도 않음. ㅋㅋ
-			// 
-			//if (InteractableFoundWidget != nullptr)
-			//{
-			//	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-			//	if (OwnerPawn == nullptr)
-			//		return;
-
-			//	const APlayerController* PlayerController = Cast<const APlayerController>(OwnerPawn->GetController());
-			//	if (PlayerController == nullptr)
-			//		return;
-
-			//	AActor* InteractableActor = Cast<AActor>(CurrentInteractableObject.GetObject());
-			//	FVector InteractableWorldLocation = InteractableActor->GetActorLocation();
-
-			//	FVector2D DesiredWidgetLocation;
-			//	PlayerController->ProjectWorldLocationToScreen(InteractableWorldLocation, OUT DesiredWidgetLocation);
-
-			//	InteractableFoundWidget->SetPositionInViewport(DesiredWidgetLocation);
-			//}
+			if (InteractableFoundWidget != nullptr)
+			{
+				InteractableFoundWidget->RemoveFromViewport();
+				InteractableFoundWidget = nullptr;
+			}
 
 			return;
 		}
-
-		CurrentInteractableObject = nullptr;
+		else
+		{
+			CurrentInteractableObject = nullptr;
+		}
+	}
+	else
+	{
 		if (InteractableFoundWidget != nullptr)
 		{
 			InteractableFoundWidget->RemoveFromViewport();
@@ -94,7 +84,22 @@ void UHamsterInteractorComponent::TickComponent(float DeltaTime, ELevelTick Tick
 		InteractableFoundWidget = CreateWidget<UUserWidget>(GetWorld(), InteractableFoundWidgetClass);
 		InteractableFoundWidget->AddToViewport();
 	}
-	
+
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (OwnerPawn == nullptr)
+		return;
+
+	const APlayerController* PlayerController = Cast<const APlayerController>(OwnerPawn->GetController());
+	if (PlayerController == nullptr)
+		return;
+
+	AActor* InteractableActor = Cast<AActor>(CurrentInteractableObject.GetObject());
+	FVector InteractableWorldLocation = InteractableActor->GetActorLocation();
+
+	FVector2D DesiredWidgetLocation;
+	PlayerController->ProjectWorldLocationToScreen(InteractableWorldLocation, OUT DesiredWidgetLocation);
+
+	InteractableFoundWidget->SetPositionInViewport(DesiredWidgetLocation);
 }
 
 void UHamsterInteractorComponent::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

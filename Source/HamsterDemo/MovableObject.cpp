@@ -57,28 +57,37 @@ bool AMovableObject::BeginInteract(UHamsterInteractorComponent* InteractorCompon
 {
 	AActor* Interactor = InteractorComponent->GetOwner();
 
-	if (TargetComponent == nullptr)
-		return false;
+	if (IsInteracting(InteractorComponent))
+	{
+		if (InteractorPhysicsHandleComponent != nullptr)
+		{
+			InteractorPhysicsHandleComponent->ReleaseComponent();
+			InteractorPhysicsHandleComponent = nullptr;
+		}
 
-	InteractorPhysicsHandleComponent = Cast<UPhysicsHandleComponent>(Interactor->GetComponentByClass(UPhysicsHandleComponent::StaticClass()));
-	if (InteractorPhysicsHandleComponent == nullptr)
-		return false;
+		if (TargetComponent != nullptr)
+			TargetComponent->SetSimulatePhysics(false);
+	}
+	else
+	{
+		if (TargetComponent == nullptr)
+			return false;
 
-	TargetComponent->SetSimulatePhysics(true);
-	InteractorPhysicsHandleComponent->GrabComponentAtLocationWithRotation(TargetComponent, NAME_None, GetActorLocation(), GetActorRotation());
+		InteractorPhysicsHandleComponent = Cast<UPhysicsHandleComponent>(Interactor->GetComponentByClass(UPhysicsHandleComponent::StaticClass()));
+		if (InteractorPhysicsHandleComponent == nullptr)
+			return false;
+
+		TargetComponent->SetSimulatePhysics(true);
+		InteractorPhysicsHandleComponent->GrabComponentAtLocationWithRotation(TargetComponent, NAME_None, GetActorLocation(), GetActorRotation());
+	}
+
+	
 	return true;
 }
 
 void AMovableObject::EndInteract(UHamsterInteractorComponent* InteractorComponent)
 {
-	if (InteractorPhysicsHandleComponent != nullptr)
-	{
-		InteractorPhysicsHandleComponent->ReleaseComponent();
-		InteractorPhysicsHandleComponent = nullptr;
-	}
-
-	if (TargetComponent != nullptr)
-		TargetComponent->SetSimulatePhysics(false);
+	
 }
 
 bool AMovableObject::IsInteracting(UHamsterInteractorComponent* InteractorComponent) const

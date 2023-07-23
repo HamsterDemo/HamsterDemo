@@ -16,7 +16,7 @@ UHamsterGameInstance::UHamsterGameInstance()
 		UE_LOG(LogTemp, Log, TEXT("Dialogue TableData not succeeded"));
 	}
 
-	HamsterDialogueTable = DT_HamDialogue.Object;
+	HamsterDialogueTable = DT_HamDialogue.Object; //이건 뭘까 아직 모르겠음
 
 
 }

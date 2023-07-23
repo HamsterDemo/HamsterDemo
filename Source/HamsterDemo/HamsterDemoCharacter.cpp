@@ -64,15 +64,6 @@ AHamsterDemoCharacter::AHamsterDemoCharacter()
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> BP_UI_InteractablePopup(TEXT("/Game/UI/UI_InteractablePopup.UI_InteractablePopup_C")); 
-	if (BP_UI_InteractablePopup.Succeeded())
-	{
-		InteractableTextClass = BP_UI_InteractablePopup.Class;
-		UE_LOG(LogTemp, Log, TEXT("Widget Class succeeded"));
-	}
-	
-
 }
 
 void AHamsterDemoCharacter::BeginPlay()
@@ -83,18 +74,6 @@ void AHamsterDemoCharacter::BeginPlay()
 	FP_Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 	Mesh1P->SetHiddenInGame(false, true);
 
-	if (IsValid(InteractableTextClass))
-	{
-		InteractableText = Cast<UUserWidget>(CreateWidget(GetWorld(), InteractableTextClass));
-
-		if (IsValid(InteractableText))
-		{
-			UE_LOG(LogTemp, Log, TEXT("Widget valid"));
-		}
-
-		UE_LOG(LogTemp, Log, TEXT("Widget Class valid"));
-	}
-	
 	characterPhysicsHandle = this->FindComponentByClass<UPhysicsHandleComponent>();
 	if (characterPhysicsHandle != nullptr)
 	{
@@ -303,15 +282,6 @@ void AHamsterDemoCharacter::MoveRight(float Value)
 void AHamsterDemoCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-}
-
-AInteractableObject* AHamsterDemoCharacter::TraceInteractableObject(struct FHitResult& inHit)
-{
-	auto actor = inHit.GetActor();
-	if (actor == nullptr)
-		return nullptr;
-
-	return Cast<AInteractableObject>(actor);
 }
 
 FVector AHamsterDemoCharacter::GetSpawnFVector()

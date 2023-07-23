@@ -151,11 +151,6 @@ private:
 	FVector GetGunRightFVector(); // ���� �ٶ󺸴� ���� ���ϱ�
 
 protected:
-	TSubclassOf<UUserWidget> InteractableTextClass;
-	UPROPERTY(EditAnywhere)
-		UUserWidget* InteractableText;
-	FVector2D textLocation;
-	bool isSuccessInteract;
 	AInteractableObject* InteractableObj;
 	bool lockMoveForInteract = false; // 상호작용 중일 때 방향 전환 등 입력을 막기 위한 변수
 

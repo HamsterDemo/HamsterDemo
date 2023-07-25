@@ -25,6 +25,7 @@ public:
 private:
 	TArray<FString> dialogDatas;
 	int currentDialogIndex = 0;
+	struct FHamsterDialogueData* CurrentDialogueData;
 
 
 protected:

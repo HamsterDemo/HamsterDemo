@@ -3,6 +3,7 @@
 
 #include "TalkableObject.h"
 #include "Components/InputComponent.h"
+#include "HamsterGameInstance.h"
 #include "GameFramework/InputSettings.h"
 
 
@@ -15,6 +16,8 @@ ATalkableObject::ATalkableObject()
 		TalkPopupClass = BP_UI_TalkPopup.Class;
 		UE_LOG(LogTemp, Log, TEXT("Talk Class succeeded"));
 	}
+
+	
 
 	currentDialogIndex = 0;
 

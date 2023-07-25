@@ -14,7 +14,7 @@ struct FHamsterDialogueData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FHamsterDialogueData() : Name("StartName"), Line("StartLine"), CanTalkMore(true) {} //초기 설정
+	FHamsterDialogueData() : Name("StartName"), Line("StartLine") {} //초기 설정
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		FString Name;
@@ -22,8 +22,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		FString Line;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		bool CanTalkMore;
 
 };
 
@@ -38,10 +36,13 @@ class HAMSTERDEMO_API UHamsterGameInstance : public UGameInstance
 public:
 	UHamsterGameInstance();
 
-	//FHamsterDialogueData* GetDialogueData(FString Name);
+	FHamsterDialogueData* GetDialogueData(int index);
+
 
 private:
 	UPROPERTY()
 		class UDataTable* HamsterDialogueTable;
+
+	TArray<FHamsterDialogueData*> DialogueArray;
 	
 };

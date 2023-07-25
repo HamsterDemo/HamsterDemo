@@ -37,6 +37,7 @@ public:
 	UHamsterGameInstance();
 
 	FHamsterDialogueData* GetDialogueData(int index);
+	TArray<FHamsterDialogueData*> GetAllDialogueData();
 
 
 private:

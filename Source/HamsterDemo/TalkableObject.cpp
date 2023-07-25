@@ -3,8 +3,8 @@
 
 #include "TalkableObject.h"
 #include "Components/InputComponent.h"
-#include "HamsterGameInstance.h"
 #include "GameFramework/InputSettings.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ATalkableObject::ATalkableObject()
@@ -17,17 +17,17 @@ ATalkableObject::ATalkableObject()
 		UE_LOG(LogTemp, Log, TEXT("Talk Class succeeded"));
 	}
 
-	
 
-	currentDialogIndex = 0;
+	CurrentDialogIndex = 0;
 
-	dialogDatas.Add("Hello World!");
-	dialogDatas.Add("Hello World2!");
-	dialogDatas.Add("Hello World End!");
 }
 
 void ATalkableObject::BeginPlay()
 {
+	auto HamsterGameInstance = Cast<UHamsterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	DialogDatas = HamsterGameInstance->GetAllDialogueData();
+
+	
 	if (IsValid(TalkPopupClass))
 	{
 		TalkPopup = Cast<UUserWidget>(CreateWidget(GetWorld(), TalkPopupClass));
@@ -46,7 +46,7 @@ void ATalkableObject::BeginPlay()
 
 bool ATalkableObject::IsInteractable(UHamsterInteractorComponent* InteractorComponent) const
 {
-	return currentDialogIndex < dialogDatas.Num();
+	return CurrentDialogIndex < DialogDatas.Num();
 }
 
 bool ATalkableObject::BeginInteract(UHamsterInteractorComponent* InteractorComponent)
@@ -56,9 +56,9 @@ bool ATalkableObject::BeginInteract(UHamsterInteractorComponent* InteractorCompo
 		TalkPopup->AddToViewport();
 	}
 
-	if (currentDialogIndex >= dialogDatas.Num())
+	if (CurrentDialogIndex >= DialogDatas.Num())
 	{
-		currentDialogIndex = 0;
+		CurrentDialogIndex = 0;
 		
 		if (TalkPopup->IsVisible())
 		{
@@ -68,7 +68,8 @@ bool ATalkableObject::BeginInteract(UHamsterInteractorComponent* InteractorCompo
 	}
 	else
 	{
-		TextLine->SetText(FText::FromString(dialogDatas[currentDialogIndex++]));
+		TextName->SetText(FText::FromString(DialogDatas[CurrentDialogIndex]->Name));
+		TextLine->SetText(FText::FromString(DialogDatas[CurrentDialogIndex++]->Line));
 	}
 
 	return true;
@@ -81,5 +82,5 @@ void ATalkableObject::EndInteract(UHamsterInteractorComponent* InteractorCompone
 
 bool ATalkableObject::IsInteracting(UHamsterInteractorComponent* InteractorComponent) const
 {
-	return currentDialogIndex > 0;
+	return CurrentDialogIndex > 0;
 }

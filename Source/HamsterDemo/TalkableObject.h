@@ -8,6 +8,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "HamsterInteractableInterface.h"
+#include "HamsterGameInstance.h"
 #include "TalkableObject.generated.h"
 
 /**
@@ -23,9 +24,8 @@ public:
 	ATalkableObject();
 
 private:
-	TArray<FString> dialogDatas;
-	int currentDialogIndex = 0;
-	struct FHamsterDialogueData* CurrentDialogueData;
+	TArray<FHamsterDialogueData*> DialogDatas;
+	int CurrentDialogIndex = 0;;
 
 
 protected:

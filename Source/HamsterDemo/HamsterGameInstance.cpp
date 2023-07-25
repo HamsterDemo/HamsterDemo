@@ -31,8 +31,12 @@ FHamsterDialogueData* UHamsterGameInstance::GetDialogueData(int index)
 	{
 		return DialogueArray[index];
 	}
-}
+} //항목 하나씩 가져오는 함수
 
 
-//FLevelUpTableRow* LevelUpTableRow = LevelUpDataTable->FindRow<FLevelUpTableRow>(FName(*(FString::FormatAsNumber(i))), FString(""));
-//UE_LOG(LogTemp, Log, TEXT("Lv.%d :: ExpToNextLevel(%d) TotalExp(%d)"), i, (*LevelUpTableRow).ExpToNextLevel, (*LevelUpTableRow).TotalExp);
+TArray<FHamsterDialogueData*> UHamsterGameInstance::GetAllDialogueData()
+{
+	return DialogueArray;
+
+} //DialogueArray 전체를 가져오는 함수
+

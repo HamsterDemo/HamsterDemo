@@ -56,9 +56,26 @@ void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 			{
 				World->SpawnActor<AProjectileEffect>(DamagedEffect, SpawnLocation, SpawnRotation, ActorSpawnParams);
 			}
+
+			if (OtherActor) //나중에 Damagable 체크
+			{
+				FDamageEvent DamageEvent;
+				OtherActor->TakeDamage(50.0, DamageEvent, CharacterController, this);
+			}
+
+			// 총을 쏨 > 총알이 어딘가에 맞았음(안사라지고) > 맞은 물체를 가져와서 > 맞은 물체가 떄릴수있는애면 > 데미지를 줘 
+			// OnFire > OnHit > HitResult.GetActor > if(Damagable) > HitResult의 TakeDamage 호출
+
 		}
 	}
 
 	Destroy();
 
 }
+
+AController* AHamsterDemoProjectile::SetCharacterController(AController* Controller)
+{
+	CharacterController = Controller;
+	return CharacterController;
+}
+

@@ -158,5 +158,7 @@ public:
 	// UPROPERTY(EditDefaultsOnly)
 	UPhysicsHandleComponent* characterPhysicsHandle = nullptr;
 	USceneComponent* characterGrabLocation = nullptr;
+
+
 };
 

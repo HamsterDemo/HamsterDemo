@@ -19,6 +19,7 @@
 #include "HamsterInteractorComponent.h"
 #include "HamsterGrabbingPointComponent.h"
 
+
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 //////////////////////////////////////////////////////////////////////////
@@ -166,8 +167,11 @@ void AHamsterDemoCharacter::OnFire()
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
+
 			// spawn the projectile at the muzzle
-			World->SpawnActor<AHamsterDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			auto tempActor = World->SpawnActor<AHamsterDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			tempActor->SetCharacterController(GetController());
+
 		}
 	}
 

@@ -38,5 +38,11 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+	AController* SetCharacterController(AController* Controller);
+	AController* CharacterController;
+
+	
+
 };
 

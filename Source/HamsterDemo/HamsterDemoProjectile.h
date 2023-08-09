@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Engine/Classes/Particles/ParticleSystemComponent.h"
 #include "ProjectileEffect.h"
+#include "MonsterCharacter.h"
 #include "HamsterDemoProjectile.generated.h"
 
 class USphereComponent;
@@ -42,7 +43,6 @@ public:
 	AController* SetCharacterController(AController* Controller);
 	AController* CharacterController;
 
-	
 
 };
 

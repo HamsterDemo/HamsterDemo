@@ -36,9 +36,11 @@ void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 {
 	// Only add impulse and destroy projectile if we hit a physics
 	//피직스에 부딪히면 add impulse & destroy
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+
+	AMonsterCharacter* MonsterCharacter = Cast<AMonsterCharacter>(OtherActor);
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && MonsterCharacter != nullptr)
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation()); 
+		//OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation()); //충격 추가하는 코드인데 지금은 필요 없어서 일단 비활성화 해둠
 
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
@@ -61,6 +63,8 @@ void AHamsterDemoProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 			{
 				FDamageEvent DamageEvent;
 				OtherActor->TakeDamage(50.0, DamageEvent, CharacterController, this);
+				
+				//몬스터 클래스 파서 테이크데미지 오버라이드해서 떼미지전달
 			}
 
 			// 총을 쏨 > 총알이 어딘가에 맞았음(안사라지고) > 맞은 물체를 가져와서 > 맞은 물체가 떄릴수있는애면 > 데미지를 줘 
@@ -78,4 +82,5 @@ AController* AHamsterDemoProjectile::SetCharacterController(AController* Control
 	CharacterController = Controller;
 	return CharacterController;
 }
+
 

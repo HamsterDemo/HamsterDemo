@@ -9,6 +9,15 @@ AMonsterCharacter::AMonsterCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//MeshMonster = GetMesh();
+
+
+	static ConstructorHelpers::FObjectFinder<UAnimSequence> DEAD_ANIM(TEXT("/Game/AnimStarterPack/Death_1.Death_1"));
+	if (DEAD_ANIM.Succeeded())
+	{
+		DeadAnimation = DEAD_ANIM.Object;
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -44,18 +53,50 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 
 float AMonsterCharacter::SetHP(float HP, float FinalDamage)
 {
-	if (MonsterHP <= 0)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Monster HP 0 :: Dead"));
+	if (MonsterHP == -9999)
 		return 0;
-	}
-	
+
 	MonsterHP = MonsterHP - FinalDamage;
 	UE_LOG(LogTemp, Log, TEXT("Damage %f, Monster HP %f"), FinalDamage, MonsterHP);
 
+	if (MonsterHP <= 0)
+	{
+		MonsterHP = -9999;
+
+		UE_LOG(LogTemp, Log, TEXT("Monster HP 0 :: Dead"));
+
+		bool bLoop = false;
+		GetMesh()->PlayAnimation(DeadAnimation, bLoop);
+
+		FTimerHandle WaitHandle;
+		float WaitTime = 5.0;
+		GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				Destroy();
+
+			}), WaitTime, false);
+		
+		return 0;
+	}
 	
 	return 0.0f;
 }
+
+//void AMonsterCharacter::PlayDeadAnim()
+//{
+//	if (DeadAnimation != nullptr)
+//	{
+//		// Get the animation object for the arms mesh
+//		UAnimInstance* AnimInstance = MeshMonster->GetAnimInstance();
+//		if (AnimInstance != nullptr)
+//		{
+//			AnimInstance->Montage_Play(DeadAnimation, 1.f);
+//
+//		}
+//
+//
+//	}
+//}
 
 
 

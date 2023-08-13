@@ -26,10 +26,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	USkeletalMeshComponent* MeshMonster;
+
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	float SetHP(float HP, float FinalDamage);
 
 	float MonsterHP = 500;
+
+	void PlayDeadAnim();
+	UAnimSequence* DeadAnimation;
 
 };

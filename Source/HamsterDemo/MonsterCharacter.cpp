@@ -18,6 +18,9 @@ AMonsterCharacter::AMonsterCharacter()
 		DeadAnimation = DEAD_ANIM.Object;
 	}
 
+	AIControllerClass = AMonsterAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 }
 
 // Called when the game starts or when spawned

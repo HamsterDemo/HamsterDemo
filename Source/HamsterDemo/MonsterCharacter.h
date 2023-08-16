@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "MonsterAIController.h"
 #include "MonsterCharacter.generated.h"
 
 UCLASS()

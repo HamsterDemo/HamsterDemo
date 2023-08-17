@@ -3,45 +3,54 @@
 
 #include "MonsterAIController.h"
 #include "NavigationSystem.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
+
+const FName AMonsterAIController::HomePosKey(TEXT("HomePos"));
+const FName AMonsterAIController::PatrolPosKey(TEXT("PatrolPos"));
 
 AMonsterAIController::AMonsterAIController()
 {
-	RepeatInterval = 3.0f;
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/BB_MonsterCharacter.BB_MonsterCharacter"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/AI/BT_MonsterCharacter.BT_MonsterCharacter"));
+
+	if (BBObject.Succeeded())
+	{
+		BBAsset = BBObject.Object;
+		UE_LOG(LogTemp, Log, TEXT("BBAsset Succeeded"));
+	}
+		
+
+	if (BTObject.Succeeded())
+	{
+		BTAsset = BTObject.Object;
+		UE_LOG(LogTemp, Log, TEXT("BTAsset Succeeded"));
+	}
 }
 
 void AMonsterAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	GetWorld()->GetTimerManager().SetTimer(RepeatTimerHandle, this, &AMonsterAIController::OnRepeatTimer, RepeatInterval, true);
 
+	UBlackboardComponent* BlackboardComponent = Blackboard;
+
+	if (UseBlackboard(BBAsset, BlackboardComponent))
+	{
+		Blackboard->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
+		if (!RunBehaviorTree(BTAsset))
+		{
+			UE_LOG(LogTemp, Log, TEXT("AIController couldn't run behavior tree!"));
+		}
+	}
 
 }
 
 void AMonsterAIController::OnUnPossess()
 {
 	Super::OnUnPossess();
-	GetWorld()->GetTimerManager().ClearTimer(RepeatTimerHandle);
+	
 }
 
-void AMonsterAIController::OnRepeatTimer()
-{
-	auto CurrentPawn = GetPawn();
-	if (CurrentPawn == nullptr)
-		return;
 
-	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-	if (NavSystem == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("NavSystem nullptr"));
-		return;
-	}
-
-	FNavLocation NextLocation;
-	if (NavSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, 500.0f, NextLocation))
-	{
-		//UNavigationSystemV1::SimpleMoveToLocation(this, NextLocation.Location);
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, NextLocation.Location);
-		UE_LOG(LogTemp, Log, TEXT("Next Location: %s"), *NextLocation.Location.ToString());
-	}
-}

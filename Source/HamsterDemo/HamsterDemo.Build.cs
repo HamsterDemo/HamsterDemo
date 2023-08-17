@@ -9,6 +9,6 @@ public class HamsterDemo : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG" });
-        PublicDependencyModuleNames.AddRange(new string[] { "NavigationSystem" });
-    }
+        PublicDependencyModuleNames.AddRange(new string[] { "NavigationSystem", "AIModule", "GamePlayTasks" });
+    }	
 }

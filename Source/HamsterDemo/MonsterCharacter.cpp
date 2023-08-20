@@ -27,6 +27,8 @@ AMonsterCharacter::AMonsterCharacter()
 void AMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCharacterMovement()->MaxWalkSpeed *= 0.6;
 	
 }
 
@@ -67,6 +69,8 @@ float AMonsterCharacter::SetHP(float HP, float FinalDamage)
 		MonsterHP = -9999;
 
 		UE_LOG(LogTemp, Log, TEXT("Monster HP 0 :: Dead"));
+
+		GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 
 		bool bLoop = false;
 		GetMesh()->PlayAnimation(DeadAnimation, bLoop);

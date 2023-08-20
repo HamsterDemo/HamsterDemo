@@ -170,6 +170,8 @@ void AHamsterDemoCharacter::OnFire()
 
 			// spawn the projectile at the muzzle
 			auto tempActor = World->SpawnActor<AHamsterDemoProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (tempActor == nullptr)
+				return;
 			tempActor->SetCharacterController(GetController());
 
 		}

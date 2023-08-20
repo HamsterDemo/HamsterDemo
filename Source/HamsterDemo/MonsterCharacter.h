@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
 #include "MonsterAIController.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "MonsterCharacter.generated.h"
 
 UCLASS()
